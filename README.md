@@ -64,37 +64,29 @@ Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Min
 3. Activate `WP-RelativeDate` Plugin
 
 ### General Usage
-* You need not do anything. WP-RelativeDate will automatically modify your post/comment date or time display. It will add the following text accordingly:
- * Post/Comment Date
-```
-Today
-Yesterday
-X days ago
-X weeks ago
-```
- * Post/Comment Time
-```
-X seconds ago
-X minutes ago
-X hours ago
-```
+You need not do anything. WP-RelativeDate will automatically modify your post/comment date or time display. No text will be added if the post or comment is more than a month old.
 
-* Examples are shown below:
- * Post/Comment Date
-```
-Today
-Yesterday
-10th January 2007 (2 days ago)
-25th January 2007 (2 weeks ago)
-```
- * Post/Comment Time
-```
-21:10 (2 seconds ago)
-21:15 (5 minutes ago)
-22:15 (2 hours ago)
-```
+It will add the following text accordingly:
+* Post/Comment Date
+ * Today
+ * Yesterday
+ * X days ago
+ * X weeks ago
+* Post/Comment Time
+ * X seconds ago
+ * X minutes ago
+ * X hours ago
 
-* No text will be added if the post or comment is more than a month old.
+### Examples
+* Post/Comment Date
+ * Today
+ * Yesterday
+ * 10th January 2007 (2 days ago)
+ * 25th January 2007 (2 weeks ago)
+* Post/Comment Time
+ * 21:10 (2 seconds ago)
+ * 21:15 (5 minutes ago)
+ * 22:15 (2 hours ago)
 
 ## Upgrading
 
