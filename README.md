@@ -3,7 +3,7 @@ Contributors: GamerZ
 Donate link: http://lesterchan.net/site/donation/  
 Tags: date, relative, relativedate, days, ago, weeks, since, hours, seconds, minutes, today, yesterday  
 Requires at least: 2.8  
-Tested up to: 3.5  
+Tested up to: 3.9  
 Stable tag: trunk  
 
 Displays relative date alongside with your post/comments actual date.
@@ -12,18 +12,11 @@ Displays relative date alongside with your post/comments actual date.
 
 Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Minutes Ago', '2 Hours Ago'.
 
-### Previous Versions
-* [WP-RelativeDate 1.40 For WordPress 2.1.x To 2.7.x](http://downloads.wordpress.org/plugin/wp-relativedate.1.40.zip "WP-RelativeDate 1.40 For WordPress 2.1.x To 2.7.x")
-* [WP-RelativeDate 1.00 For WordPress 2.0.x](http://downloads.wordpress.org/plugin/wp-relativedate.1.00.zip "WP-RelativeDate 1.00 For WordPress 2.0.x")
-
 ### Development
-* [http://dev.wp-plugins.org/browser/wp-relativedate/](http://dev.wp-plugins.org/browser/wp-relativedate/ "http://dev.wp-plugins.org/browser/wp-relativedate/")
+* [https://github.com/lesterchan/wp-relativedate](https://github.com/lesterchan/wp-relativedate "https://github.com/lesterchan/wp-relativedate")
 
 ### Translations
 * [http://dev.wp-plugins.org/browser/wp-relativedate/i18n/](http://dev.wp-plugins.org/browser/wp-relativedate/i18n/ "http://dev.wp-plugins.org/browser/wp-relativedate/i18n/")
-
-### Support Forums
-* [http://forums.lesterchan.net/index.php?board=19.0](http://forums.lesterchan.net/index.php?board=19.0 "http://forums.lesterchan.net/index.php?board=19.0")
 
 ### Donations
 * I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
