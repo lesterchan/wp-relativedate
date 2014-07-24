@@ -9,17 +9,19 @@ Stable tag: trunk
 Displays relative date alongside with your post/comments actual date.
 
 ## Description
-
 Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Minutes Ago', '2 Hours Ago'.
 
+### Build Status
+[![Build Status](https://travis-ci.org/lesterchan/wp-relativedate.svg?branch=master)](https://travis-ci.org/lesterchan/wp-relativedate)
+
 ### Development
-* [https://github.com/lesterchan/wp-relativedate](https://github.com/lesterchan/wp-relativedate "https://github.com/lesterchan/wp-relativedate")
+[https://github.com/lesterchan/wp-relativedate](https://github.com/lesterchan/wp-relativedate "https://github.com/lesterchan/wp-relativedate")
 
 ### Translations
-* [http://dev.wp-plugins.org/browser/wp-relativedate/i18n/](http://dev.wp-plugins.org/browser/wp-relativedate/i18n/ "http://dev.wp-plugins.org/browser/wp-relativedate/i18n/")
+[http://dev.wp-plugins.org/browser/wp-relativedate/i18n/](http://dev.wp-plugins.org/browser/wp-relativedate/i18n/ "http://dev.wp-plugins.org/browser/wp-relativedate/i18n/")
 
 ### Donations
-* I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
+I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
 
 ## Changelog
 
