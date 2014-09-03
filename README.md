@@ -3,7 +3,7 @@ Contributors: GamerZ
 Donate link: http://lesterchan.net/site/donation/  
 Tags: date, relative, relativedate, days, ago, weeks, since, hours, seconds, minutes, today, yesterday  
 Requires at least: 2.8  
-Tested up to: 3.9  
+Tested up to: 4.0  
 Stable tag: trunk  
 
 Displays relative date alongside with your post/comments actual date.
@@ -19,6 +19,9 @@ Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Min
 
 ### Translations
 [http://dev.wp-plugins.org/browser/wp-relativedate/i18n/](http://dev.wp-plugins.org/browser/wp-relativedate/i18n/ "http://dev.wp-plugins.org/browser/wp-relativedate/i18n/")
+
+### Credits
+* Plugin icon by [Freepik](http://www.freepik.com) from [Flaticon](http://www.flaticon.com)
 
 ### Donations
 I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
