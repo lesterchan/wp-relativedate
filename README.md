@@ -99,11 +99,11 @@ N/A
 
 ## Screenshots
 
-1. Comment - Seconds Ago
-2. Post - Days Ago
-3. Post - Today
+1. Post - Today
+2. Post - Yesterday
+3. Post - Days Ago
 4. Post - Weeks Ago
-5. Post - Yesterday
+5. Comment - Seconds Ago
 
 ## Frequently Asked Questions
 
