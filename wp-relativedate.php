@@ -3,7 +3,7 @@
 Plugin Name: WP-RelativeDate
 Plugin URI: http://lesterchan.net/portfolio/programming/php/
 Description: Displays relative date alongside with your post/comments actual date. Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Minutes Ago', '2 Hours Ago'.
-Version: 1.50
+Version: 1.51
 Author: Lester 'GaMerZ' Chan
 Author URI: http://lesterchan.net
 Text Domain: wp-relativedate
@@ -11,7 +11,7 @@ Text Domain: wp-relativedate
 
 
 /*
-	Copyright 2013  Lester Chan  (email : lesterchan@gmail.com)
+	Copyright 2014  Lester Chan  (email : lesterchan@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,15 +29,10 @@ Text Domain: wp-relativedate
 */
 
 ### Create Text Domain For Translations
-add_action('init', 'relativedate_textdomain');
+add_action( 'plugins_loaded', 'relativedate_textdomain' );
 function relativedate_textdomain() {
-	if (!function_exists('wp_print_styles')) {
-		load_plugin_textdomain('wp-relativedate', 'wp-content/plugins/wp-relativedate');
-	} else {
-		load_plugin_textdomain('wp-relativedate', false, 'wp-relativedate');
-	}
+	load_plugin_textdomain( 'wp-relativedate', false, dirname( plugin_basename( __FILE__ ) ) );
 }
-
 
 ### Function: Display Post Relative Date (Today/Yesterday/Days Ago/Weeks Ago)
 add_filter('the_date', 'relative_post_date', 999, 4);
@@ -82,7 +77,6 @@ function relative_post_the_date($d = '', $before = '', $after = '', $display_ago
 	} else {
 		$the_date = mysql2date($d, $post->post_date);
 	}
-	$output = '';
 	if(gmdate('Y', current_time('timestamp')) != mysql2date('Y', $post->post_date, false)) {
 		$output = $before.$the_date.$after;
 	} else {
@@ -118,8 +112,8 @@ function relative_post_the_date($d = '', $before = '', $after = '', $display_ago
 
 ### Function: Display Post Relative Time (Seconds Ago/Minutes Ago/Hours Ago)
 add_filter('the_time', 'relative_post_time', 999);
-function relative_post_time($current_timeformat, $display_ago_only = 0) {
-  global $post;
+function relative_post_time($current_timeformat, $display_ago_only = false) {
+	global $post;
 	$current_time = current_time('timestamp');
 	$date_today_time = gmdate('j-n-Y H:i:s', $current_time);
 	$post_date_time = mysql2date('j-n-Y H:i:s', $post->post_date, false);
@@ -148,7 +142,7 @@ function relative_post_time($current_timeformat, $display_ago_only = 0) {
 
 ### Function: Display Comment Relative Date (Today/Yesterday/Days Ago/Weeks Ago)
 add_filter('get_comment_date', 'relative_comment_date', 999);
-function relative_comment_date($current_dateformat, $display_ago_only = 0) {
+function relative_comment_date($current_dateformat, $display_ago_only = false) {
 	global $comment;
 	$comment_date = $comment->comment_date;
 	if(gmdate('Y', current_time('timestamp')) != mysql2date('Y', $comment_date, false)) {
@@ -206,4 +200,22 @@ function relative_comment_time($current_timeformat, $display_ago_only = 0) {
 		return $current_timeformat;
 	}
 }
-?>
+
+### Function: Short Codes
+add_shortcode( 'relativedate', 'relative_shortcode_date' );
+function relative_shortcode_date( $atts ) {
+	$attributes = shortcode_atts( array( 'date_format' => '', 'ago_only' => false ), $atts );
+	return relative_post_the_date( $attributes['date_format'], '', '', $attributes['ago_only'], false );
+}
+add_shortcode( 'relativetime', 'relative_shortcode_time' );
+function relative_shortcode_time( $atts ) {
+	global $post;
+	$attributes = shortcode_atts( array( 'time_format' => '', 'ago_only' => false ), $atts );
+	$time_format = $attributes['time_format'];
+	if( empty( $attributes['time_format'] ) ) {
+		$time_format = get_option( 'time_format' );
+	}
+	$current_time = mysql2date( $time_format, $post->post_date, false );
+
+	return relative_post_time( $current_time, $attributes['ago_only'] );
+}

@@ -3,7 +3,7 @@ Contributors: GamerZ
 Donate link: http://lesterchan.net/site/donation/  
 Tags: date, relative, relativedate, days, ago, weeks, since, hours, seconds, minutes, today, yesterday  
 Requires at least: 2.8  
-Tested up to: 4.0  
+Tested up to: 4.1  
 Stable tag: trunk  
 
 Displays relative date alongside with your post/comments actual date.
@@ -27,6 +27,8 @@ Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Min
 I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appericiate it. If not feel free to use it without any obligations.
 
 ## Changelog
+### Version 1.51
+* NEW: Add in `[relativedate]` and `[relativetime]` shortcode.
 
 ### Version 1.50 (01-06-2009)
 * NEW: Use _n() Instead Of __ngettext() And _n_noop() Instead Of __ngettext_noop()
@@ -85,6 +87,12 @@ It will add the following text accordingly:
  * 21:10 (2 seconds ago)
  * 21:15 (5 minutes ago)
  * 22:15 (2 hours ago)
+
+### Shortcodes
+* `[relativedate]`
+ * `[relativedate date_format="jS F Y" ago_only="false"]`
+* `[relativetime]`
+ * `[relativetime time_format="H:i" ago_only="false"]`
 
 ## Upgrading
 
