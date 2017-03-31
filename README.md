@@ -11,6 +11,37 @@ Displays relative date alongside with your post/comments actual date.
 ## Description
 Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Minutes Ago', '2 Hours Ago'.
 
+### General Usage
+You need not do anything. WP-RelativeDate will automatically modify your post/comment date or time display. No text will be added if the post or comment is more than a month old.
+
+It will add the following text accordingly:
+* Post/Comment Date
+ * Today
+ * Yesterday
+ * X days ago
+ * X weeks ago
+* Post/Comment Time
+ * X seconds ago
+ * X minutes ago
+ * X hours ago
+
+### Examples
+* Post/Comment Date
+ * Today
+ * Yesterday
+ * 10th January 2007 (2 days ago)
+ * 25th January 2007 (2 weeks ago)
+* Post/Comment Time
+ * 21:10 (2 seconds ago)
+ * 21:15 (5 minutes ago)
+ * 22:15 (2 hours ago)
+
+### Shortcodes
+* `[relativedate]`
+ * `[relativedate date_format="jS F Y" ago_only="false"]`
+* `[relativetime]`
+ * `[relativetime time_format="H:i" ago_only="false"]`
+ 
 ### Build Status
 [![Build Status](https://travis-ci.org/lesterchan/wp-relativedate.svg?branch=master)](https://travis-ci.org/lesterchan/wp-relativedate)
 
@@ -56,50 +87,6 @@ I spent most of my free time creating, updating, maintaining and supporting thes
 
 ### Version 1.00 (01-03-2006)
 * NEW: Initial Release
-
-## Installation
-
-1. Open `wp-content/plugins` Folder
-2. Put: `Folder: wp-relativedate`
-3. Activate `WP-RelativeDate` Plugin
-
-### General Usage
-You need not do anything. WP-RelativeDate will automatically modify your post/comment date or time display. No text will be added if the post or comment is more than a month old.
-
-It will add the following text accordingly:
-* Post/Comment Date
- * Today
- * Yesterday
- * X days ago
- * X weeks ago
-* Post/Comment Time
- * X seconds ago
- * X minutes ago
- * X hours ago
-
-### Examples
-* Post/Comment Date
- * Today
- * Yesterday
- * 10th January 2007 (2 days ago)
- * 25th January 2007 (2 weeks ago)
-* Post/Comment Time
- * 21:10 (2 seconds ago)
- * 21:15 (5 minutes ago)
- * 22:15 (2 hours ago)
-
-### Shortcodes
-* `[relativedate]`
- * `[relativedate date_format="jS F Y" ago_only="false"]`
-* `[relativetime]`
- * `[relativetime time_format="H:i" ago_only="false"]`
-
-## Upgrading
-
-1. Deactivate `WP-RelativeDate` Plugin
-2. Open `wp-content/plugins` Folder
-3. Put/Overwrite: `Folder: wp-relativedate`
-4. Activate `WP-RelativeDate` Plugin
 
 ## Upgrade Notice
 
