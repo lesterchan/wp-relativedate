@@ -3,7 +3,7 @@ Contributors: GamerZ
 Donate link: http://lesterchan.net/site/donation/  
 Tags: date, relative, relativedate, days, ago, weeks, since, hours, seconds, minutes, today, yesterday  
 Requires at least: 2.8  
-Tested up to: 5.3  
+Tested up to: 5.4  
 Stable tag: trunk  
 
 Displays relative date alongside with your post/comments actual date.
