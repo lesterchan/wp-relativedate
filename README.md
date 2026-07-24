@@ -3,8 +3,8 @@ Contributors: GamerZ
 Donate link: http://lesterchan.net/site/donation/  
 Tags: date, relative, relativedate, days, ago, weeks, since, hours, seconds, minutes, today, yesterday  
 Requires at least: 2.8  
-Tested up to: 6.3  
-Stable tag: trunk  
+Tested up to: 7.0  
+Stable tag: 1.51.1  
 
 Displays relative date alongside with your post/comments actual date.
 
@@ -41,9 +41,6 @@ It will add the following text accordingly:
  * `[relativedate date_format="jS F Y" ago_only="false"]`
 * `[relativetime]`
  * `[relativetime time_format="H:i" ago_only="false"]`
- 
-### Build Status
-[![Build Status](https://travis-ci.org/lesterchan/wp-relativedate.svg?branch=master)](https://travis-ci.org/lesterchan/wp-relativedate)
 
 ### Development
 [https://github.com/lesterchan/wp-relativedate](https://github.com/lesterchan/wp-relativedate "https://github.com/lesterchan/wp-relativedate")
@@ -58,6 +55,9 @@ It will add the following text accordingly:
 I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appreciate it. If not feel free to use it without any obligations.
 
 ## Changelog
+### Version 1.51.1
+* NEW: Bump to WordPress 7.0
+
 ### Version 1.51
 * NEW: Add in `[relativedate]` and `[relativetime]` shortcode.
 
