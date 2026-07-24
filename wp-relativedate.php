@@ -103,7 +103,7 @@ function relative_post_the_date($d = '', $before = '', $after = '', $display_ago
         }
     }
     if($display) {
-        echo $output;
+        echo esc_html($output);
     } else {
         return $output;
     }
@@ -205,7 +205,7 @@ function relative_comment_time($current_timeformat, $display_ago_only = 0) {
 add_shortcode( 'relativedate', 'relative_shortcode_date' );
 function relative_shortcode_date( $atts ) {
     $attributes = shortcode_atts( array( 'date_format' => '', 'ago_only' => false ), $atts );
-    return relative_post_the_date( $attributes['date_format'], '', '', $attributes['ago_only'], false );
+    return esc_html( relative_post_the_date( $attributes['date_format'], '', '', (bool) $attributes['ago_only'], false ) );
 }
 add_shortcode( 'relativetime', 'relative_shortcode_time' );
 function relative_shortcode_time( $atts ) {
@@ -217,5 +217,5 @@ function relative_shortcode_time( $atts ) {
     }
     $current_time = mysql2date( $time_format, $post->post_date, false );
 
-    return relative_post_time( $current_time, $attributes['ago_only'] );
+    return esc_html( relative_post_time( $current_time, (bool) $attributes['ago_only'] ) );
 }
