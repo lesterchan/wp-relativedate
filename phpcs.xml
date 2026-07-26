@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<ruleset name="WP-RelativeDate">
+	<description>WordPress Coding Standards for WP-RelativeDate.</description>
+
+	<file>.</file>
+
+	<!-- WPCS has no JavaScript sniffs; never let PHPCS touch .js. -->
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!-- Scanning these makes the CI runner run out of memory. -->
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+
+	<rule ref="WordPress"/>
+
+	<config name="text_domain" value="wp-relativedate"/>
+	<config name="minimum_wp_version" value="6.0"/>
+
+	<!--
+		Test files are named test-*.php by WordPress convention rather than
+		class-*.php; the coding standard excepts test classes from that rule.
+	-->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!--
+		A test method's name is its documentation -- test_a_future_post_on_the_
+		same_day_gets_no_relative_suffix() gains nothing from a docblock
+		repeating it. Required everywhere else.
+	-->
+	<rule ref="Squiz.Commenting.FunctionComment.Missing">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Commenting.DocComment.MissingShort">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Commenting.DocComment.ShortNotCapital">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!--
+		The fixtures deliberately read and write the site's timezone options and
+		build DateTimeImmutable objects by hand, which is the whole point of a
+		suite about relative dates.
+	-->
+	<rule ref="WordPress.DateTime.RestrictedFunctions">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+</ruleset>

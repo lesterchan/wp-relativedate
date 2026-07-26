@@ -6,8 +6,8 @@
  */
 
 /**
- * @covers ::relative_shortcode_date
- * @covers ::relative_shortcode_time
+ * @covers RelativeDate::shortcode_date
+ * @covers RelativeDate::shortcode_time
  */
 class Test_RelativeDate_Shortcodes extends RelativeDate_TestCase {
 
