@@ -202,4 +202,50 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_date( 'U', $comment ) );
 		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_time( 'U', false, true, $comment ) );
 	}
+
+	public function test_every_machine_format_in_the_list_is_left_alone() {
+		$comment = $this->make_comment( 0 );
+
+		foreach ( array( 'c', 'r', 'U', 'G', DATE_ATOM, DATE_RSS ) as $format ) {
+			$this->assertNotSame(
+				'Today',
+				get_comment_date( $format, $comment ),
+				"Format '{$format}' asks for a machine-readable value and must not be relativised."
+			);
+		}
+	}
+
+	/**
+	 * Reading the captured comment clears it.
+	 *
+	 * Without that, a capture left over from a block render would answer for
+	 * the next direct call of the template tag, attaching one comment's
+	 * relative date to a completely different one.
+	 */
+	public function test_a_capture_is_consumed_and_cannot_answer_for_the_next_call() {
+		$comment = $this->make_comment( 0 );
+		unset( $GLOBALS['comment'] );
+
+		// This consumes the capture.
+		$this->assertSame( 'Today', get_comment_date( '', $comment ) );
+
+		// Nothing is in scope any more, so there is nothing to say.
+		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ) );
+	}
+
+	/**
+	 * The capture is preferred over the global, which is what makes
+	 * get_comment_date( '', $other ) inside a comment loop describe $other
+	 * rather than whichever comment the loop happens to be on.
+	 */
+	public function test_the_captured_comment_wins_over_a_different_global() {
+		$old = $this->make_comment( 40 * DAY_IN_SECONDS );
+		$this->make_comment( 0 );
+
+		// make_comment() left the new comment as the global. Ask about the old
+		// one explicitly: it is far too old for a relative form, so "Today"
+		// here would mean the global had answered for it.
+		$this->assertNotSame( 'Today', get_comment_date( '', $old ) );
+		$this->assertSame( mysql2date( get_option( 'date_format' ), $old->comment_date ), get_comment_date( '', $old ) );
+	}
 }

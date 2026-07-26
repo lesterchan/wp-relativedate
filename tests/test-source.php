@@ -190,6 +190,63 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 		}
 	}
 
+	/**
+	 * The translatable strings, frozen at their 1.51.1 spelling.
+	 *
+	 * WP-RelativeDate has translations on translate.wordpress.org going back
+	 * years, and a msgid is a byte-for-byte lookup key: changing one character,
+	 * or letting phpcbf renumber a placeholder from %s to %1$s, silently drops
+	 * every translation of that string and falls back to English.
+	 *
+	 * A restructuring is exactly when that happens, so the whole set is pinned
+	 * here rather than trusted. Adding a genuinely new string means adding it to
+	 * this list deliberately; changing an existing one should be a decision
+	 * about abandoning its translations, not a side effect of a refactor.
+	 */
+	public function test_no_translatable_string_has_changed_since_1_51_1() {
+		$expected = array(
+			'%s day ago',
+			'%s days ago',
+			'%s hour ago',
+			'%s hours ago',
+			'%s minute ago',
+			'%s minutes ago',
+			'%s second ago',
+			'%s seconds ago',
+			'%s week ago',
+			'%s weeks ago',
+			'Today',
+			'Yesterday',
+		);
+
+		$code = relativedate_test_source_code();
+
+		preg_match_all( "/(?:__|_n|_x|esc_html__|esc_attr__)\(\s*'((?:[^'\\\\]|\\\\.)*)'/", $code, $singles );
+		preg_match_all( "/_n\(\s*'(?:[^'\\\\]|\\\\.)*'\s*,\s*'((?:[^'\\\\]|\\\\.)*)'/", $code, $plurals );
+
+		$found = array_unique( array_merge( $singles[1], $plurals[1] ) );
+		sort( $found );
+
+		$this->assertSame( $expected, $found );
+	}
+
+	/**
+	 * Every one of them must carry the plugin's own text domain.
+	 */
+	public function test_every_translation_call_uses_the_plugin_text_domain() {
+		$code = relativedate_test_source_code();
+
+		preg_match_all( "/(?:__|_n)\((.*?)\);/s", $code, $calls );
+
+		foreach ( $calls[1] as $arguments ) {
+			$this->assertStringContainsString(
+				"'wp-relativedate'",
+				$arguments,
+				"A translation call is missing the text domain: {$arguments}"
+			);
+		}
+	}
+
 	public function test_the_gpl_licence_is_shipped() {
 		$licence = relativedate_test_read( 'LICENSE' );
 
