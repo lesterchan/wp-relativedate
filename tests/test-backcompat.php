@@ -11,6 +11,13 @@
  * @package WP-RelativeDate
  */
 
+/**
+ * @covers ::relative_post_date
+ * @covers ::relative_post_time
+ * @covers ::relative_comment_date
+ * @covers ::relative_comment_time
+ * @covers ::relative_post_the_date
+ */
 class Test_RelativeDate_BackCompat extends RelativeDate_TestCase {
 
 	/**

@@ -28,9 +28,9 @@
 	</rule>
 
 	<!--
-		A test method's name is its documentation -- test_a_future_post_on_the_
-		same_day_gets_no_relative_suffix() gains nothing from a docblock
-		repeating it. Required everywhere else.
+		A test method's name is its documentation. Requiring a docblock on
+		test_a_future_post_on_the_same_day_gets_no_relative_suffix() would only
+		get one repeating it. Required everywhere else.
 	-->
 	<rule ref="Squiz.Commenting.FunctionComment.Missing">
 		<exclude-pattern>/tests/*</exclude-pattern>
@@ -49,5 +49,23 @@
 	-->
 	<rule ref="WordPress.DateTime.RestrictedFunctions">
 		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!--
+		tests/bootstrap.php prints its "where is the test library?" diagnostic
+		before the WordPress bootstrap has run, so esc_html() does not exist yet
+		to escape it with. The string is a literal and a path this repo supplied.
+	-->
+	<rule ref="WordPress.Security.EscapeOutput">
+		<exclude-pattern>/tests/bootstrap.php</exclude-pattern>
+	</rule>
+
+	<!--
+		helper-source.php reads the plugin's own files off local disk for the
+		source-level guards. wp_remote_get() is for URLs, and WP_Filesystem is
+		neither initialised nor appropriate inside a test helper.
+	-->
+	<rule ref="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents">
+		<exclude-pattern>/tests/helper-source.php</exclude-pattern>
 	</rule>
 </ruleset>

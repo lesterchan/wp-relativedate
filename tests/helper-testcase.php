@@ -73,7 +73,7 @@ abstract class RelativeDate_TestCase extends WP_UnitTestCase {
 	/**
 	 * Create a post dated a given number of seconds ago and make it the global $post.
 	 *
-	 * post_date_gmt is passed explicitly rather than left for wp_insert_post to
+	 * The GMT date is passed explicitly rather than left for wp_insert_post() to
 	 * derive, because a post dated in the future is otherwise rewritten to
 	 * 'future' status with a date of its own choosing.
 	 *
