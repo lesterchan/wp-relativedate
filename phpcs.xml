@@ -61,11 +61,12 @@
 	</rule>
 
 	<!--
-		helper-source.php reads the plugin's own files off local disk for the
-		source-level guards. wp_remote_get() is for URLs, and WP_Filesystem is
-		neither initialised nor appropriate inside a test helper.
+		The source-level guards read the plugin's own files off local disk, and
+		must read them raw: php_strip_whitespace() would remove the very
+		docblocks one of them asserts on. wp_remote_get() is for URLs, and
+		WP_Filesystem is neither initialised nor appropriate in a test.
 	-->
 	<rule ref="WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents">
-		<exclude-pattern>/tests/helper-source.php</exclude-pattern>
+		<exclude-pattern>/tests/*</exclude-pattern>
 	</rule>
 </ruleset>
