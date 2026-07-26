@@ -53,9 +53,11 @@ It will add the following text accordingly:
 ### Turning It Off For One Template
 The plugin has no settings screen. To leave a template's dates alone, remove the filter before the loop:
 
-`remove_filter( 'the_date', 'relative_post_date', 999 );`
+`remove_filter( 'get_the_date', 'relative_post_date', 999 );`
 
-The other three callbacks are `relative_post_time` on `the_time`, `relative_comment_date` on `get_comment_date` and `relative_comment_time` on `get_comment_time`, all at priority 999.
+The four callbacks are `relative_post_date` on `get_the_date`, `relative_post_time` on `get_the_time`, `relative_comment_date` on `get_comment_date` and `relative_comment_time` on `get_comment_time`, all at priority 999.
+
+Removing the `get_the_date` filter also covers `the_date()`, which builds its output by calling `get_the_date()`. The same goes for `the_time()`, `comment_date()` and `comment_time()`.
 
 ### Development
 [https://github.com/lesterchan/wp-relativedate](https://github.com/lesterchan/wp-relativedate "https://github.com/lesterchan/wp-relativedate")
@@ -69,6 +71,9 @@ The other three callbacks are `relative_post_time` on `the_time`, `relative_comm
 ## Changelog
 ### 2.0.0
 * NEW: Requires WordPress 6.0 and PHP 7.4.
+* FIXED: Post dates now work on any theme using `get_the_date()` or `get_the_time()`, which is every classic theme since Twenty Nineteen. The plugin previously only hooked `the_date()` and `the_time()`, so it appeared to do nothing on most themes.
+* FIXED: Comment dates now work on block themes. Core's Comment Date block passes the comment as an argument and never sets the global the plugin used to read.
+* CHANGED: The post callbacks moved from `the_date`/`the_time` to `get_the_date`/`get_the_time`. If you opted a template out with `remove_filter( 'the_date', 'relative_post_date', 999 )`, name the getter instead.
 * NEW: Restructured into `includes/`, with the date and time calculations in a `RelativeDate_Core` class.
 * NEW: Added a PHPUnit test suite and GitHub Actions CI.
 * FIXED: `relative_post_the_date()` no longer escapes `$before` and `$after`, which had been rendering `<h2>` and friends as literal text since 1.51.1.
@@ -126,6 +131,10 @@ The other three callbacks are `relative_post_time` on `the_time`, `relative_comm
 
 ### Why did my theme's `<h2>` around the date start showing up as text?
 * That was a bug in 1.51.1, fixed in 2.0.0. `relative_post_the_date()` was escaping its own `$before` and `$after` arguments. Upgrading is the fix; no theme change is needed.
+
+### My post dates are still plain on a block theme
+* Since WordPress 6.9 the core Post Date block resolves the date through Block Bindings and formats it itself, without calling `get_the_date()` or offering a filter, so no plugin can change what it prints. Comment dates are unaffected — the Comment Date block still calls `get_comment_date()` — and post dates work normally on classic themes and anywhere a template calls `the_date()`, `get_the_date()`, `the_time()` or `get_the_time()`.
+* To get a relative post date in a block template, use the `[relativedate]` shortcode or call `relative_post_the_date()` from a block pattern or template part.
 
 ### I used `ago_only="false"` and now the date is back
 * `ago_only="false"` has always been documented as meaning false, but until 2.0.0 the plugin read it as true. If you were relying on that, use `ago_only="true"` to keep the ago-only output.

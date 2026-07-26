@@ -11,7 +11,15 @@
  * Their signatures do not move either. The second parameter of each callback is
  * $display_ago_only, so none of the hooks may be widened to accept more of
  * core's arguments: doing so would pass a date format string into it and turn
- * "ago only" on for every date on the site.
+ * "ago only" on for every date on the site. Whatever they need from those
+ * arguments comes from RelativeDate_Context, which captures them one priority
+ * earlier.
+ *
+ * The hooks themselves did move in 2.0.0: the post pair went from the_date and
+ * the_time to get_the_date and get_the_time, which is where the comment pair
+ * already was. A theme that opted out with
+ * remove_filter( 'the_date', 'relative_post_date', 999 ) needs to name the
+ * getter now.
  *
  * @package WP-RelativeDate
  */
@@ -20,34 +28,31 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! function_exists( 'relative_post_date' ) ) {
 	/**
-	 * Rewrite a post date. Callback for 'the_date'.
+	 * Rewrite a post date. Callback for 'get_the_date'.
 	 *
-	 * @param string $the_date         The date as core assembled it, wrapper included.
-	 * @param string $d                Date format. Unused; core's third filter argument.
+	 * @param string $the_date         The date as core formatted it.
+	 * @param string $d                Date format. Unused; kept for callers from before 2.0.0.
 	 * @param string $before           Markup to open with.
 	 * @param string $after            Markup to close with.
 	 * @param bool   $display_ago_only Return only the relative phrase.
 	 * @return string
 	 */
 	function relative_post_date( $the_date, $d = '', $before = '', $after = '', $display_ago_only = false ) {
-		$post = get_post();
+		$context = RelativeDate_Context::take_post();
 
-		if ( empty( $post ) ) {
+		// Leave <time datetime> attributes and 'U' timestamps alone.
+		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
 			return $the_date;
 		}
 
-		/*
-		 * Core hands this filter $before . $date . $after already concatenated,
-		 * so the wrapper comes back off here and is reapplied below rather than
-		 * being doubled.
-		 */
-		$the_date = wp_strip_all_tags( $the_date );
+		$post = ( null !== $context && $context['object'] instanceof WP_Post ) ? $context['object'] : get_post();
 
 		/*
-		 * the_date() passes an empty string for the second and later posts
-		 * sharing a day, and expects nothing back -- wrapper included.
+		 * the_date() returns an empty string for the second and later posts
+		 * sharing a day, without ever reaching the getter. Nothing should come
+		 * back for one either way -- wrapper included.
 		 */
-		if ( '' === $the_date ) {
+		if ( empty( $post ) || '' === $the_date ) {
 			return $the_date;
 		}
 
@@ -57,14 +62,20 @@ if ( ! function_exists( 'relative_post_date' ) ) {
 
 if ( ! function_exists( 'relative_post_time' ) ) {
 	/**
-	 * Rewrite a post time. Callback for 'the_time'.
+	 * Rewrite a post time. Callback for 'get_the_time'.
 	 *
 	 * @param string $current_timeformat The time as core formatted it.
 	 * @param bool   $display_ago_only   Return only the relative phrase.
 	 * @return string
 	 */
 	function relative_post_time( $current_timeformat, $display_ago_only = false ) {
-		$post = get_post();
+		$context = RelativeDate_Context::take_post();
+
+		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+			return $current_timeformat;
+		}
+
+		$post = ( null !== $context && $context['object'] instanceof WP_Post ) ? $context['object'] : get_post();
 
 		if ( empty( $post ) ) {
 			return $current_timeformat;
@@ -83,12 +94,19 @@ if ( ! function_exists( 'relative_comment_date' ) ) {
 	 * @return string
 	 */
 	function relative_comment_date( $current_dateformat, $display_ago_only = false ) {
+		$context = RelativeDate_Context::take_comment();
+
+		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+			return $current_dateformat;
+		}
+
 		/*
-		 * get_comment_date() is routinely called with an explicit comment ID
-		 * from outside the comment loop -- the recent-comments widget does
-		 * exactly that -- and there is no $comment global to read there.
+		 * get_comment_date() is routinely called with the comment passed as an
+		 * argument and no global set -- the recent-comments widget does it, and
+		 * so does core's Comment Date block, which is how every block theme
+		 * renders a comment date.
 		 */
-		$comment = get_comment();
+		$comment = ( null !== $context && $context['object'] instanceof WP_Comment ) ? $context['object'] : get_comment();
 
 		if ( empty( $comment ) ) {
 			return $current_dateformat;
@@ -107,7 +125,13 @@ if ( ! function_exists( 'relative_comment_time' ) ) {
 	 * @return string
 	 */
 	function relative_comment_time( $current_timeformat, $display_ago_only = false ) {
-		$comment = get_comment();
+		$context = RelativeDate_Context::take_comment();
+
+		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+			return $current_timeformat;
+		}
+
+		$comment = ( null !== $context && $context['object'] instanceof WP_Comment ) ? $context['object'] : get_comment();
 
 		if ( empty( $comment ) ) {
 			return $current_timeformat;

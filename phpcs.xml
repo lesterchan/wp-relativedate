@@ -52,6 +52,16 @@
 	</rule>
 
 	<!--
+		the_date() prints nothing unless is_new_day() says so, and is_new_day()
+		reads $currentday and $previousday. Setting them is the only way to
+		exercise the one path where the plugin must NOT relativise, so the
+		tests that cover it have to write the globals a loop would.
+	-->
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
+		<exclude-pattern>/tests/*</exclude-pattern>
+	</rule>
+
+	<!--
 		tests/bootstrap.php prints its "where is the test library?" diagnostic
 		before the WordPress bootstrap has run, so esc_html() does not exist yet
 		to escape it with. The string is a literal and a path this repo supplied.

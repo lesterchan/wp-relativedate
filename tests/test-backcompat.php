@@ -27,8 +27,8 @@ class Test_RelativeDate_BackCompat extends RelativeDate_TestCase {
 	 */
 	public static function hooks() {
 		return array(
-			'relative_post_date'    => array( 'the_date', 999, 4 ),
-			'relative_post_time'    => array( 'the_time', 999, 1 ),
+			'relative_post_date'    => array( 'get_the_date', 999, 1 ),
+			'relative_post_time'    => array( 'get_the_time', 999, 1 ),
 			'relative_comment_date' => array( 'get_comment_date', 999, 1 ),
 			'relative_comment_time' => array( 'get_comment_time', 999, 1 ),
 		);
@@ -79,21 +79,28 @@ class Test_RelativeDate_BackCompat extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * The plugin has only ever hooked the_date() and the_time(), never their
-	 * get_ counterparts, and 2.0.0 did not change that.
+	 * The post pair moved to the getters in 2.0.0 and must not be on both.
 	 *
-	 * It is worth pinning because it is the reason the plugin looks inert on a
-	 * modern theme: get_the_date() does not fire the 'the_date' filter, and
-	 * every default theme since Twenty Nineteen builds its post meta from the
-	 * getters. Verified in a browser on Twenty Twenty-One, where the post date
-	 * renders plain while an explicit the_date() call beside it does not.
-	 *
-	 * Hooking the getters would fix that and would also double up wherever a
-	 * theme calls both, so it is a decision rather than an oversight.
+	 * Core's the_date() builds its output by calling get_the_date(), so a
+	 * registration on each would apply the relative form twice and render
+	 * "July 24, 2026 (3 days ago) (3 days ago)".
 	 */
-	public function test_the_plugin_does_not_hook_the_getter_filters() {
-		$this->assertFalse( has_filter( 'get_the_date', 'relative_post_date' ) );
-		$this->assertFalse( has_filter( 'get_the_time', 'relative_post_time' ) );
+	public function test_the_post_callbacks_are_not_also_on_the_old_hooks() {
+		$this->assertFalse( has_filter( 'the_date', 'relative_post_date' ) );
+		$this->assertFalse( has_filter( 'the_time', 'relative_post_time' ) );
+	}
+
+	/**
+	 * Every hook the plugin relativises on is a getter. The four setter
+	 * functions -- the_date(), the_time(), comment_date(), comment_time() --
+	 * all route through one of these in core, so this is the complete set.
+	 */
+	public function test_the_plugin_only_relativises_on_getter_hooks() {
+		foreach ( array_keys( self::hooks() ) as $callback ) {
+			$hook = self::hooks()[ $callback ][0];
+
+			$this->assertStringStartsWith( 'get_', $hook, "{$callback}() must be on a getter hook." );
+		}
 	}
 
 	/**
@@ -103,12 +110,11 @@ class Test_RelativeDate_BackCompat extends RelativeDate_TestCase {
 	public function test_remove_filter_still_disables_the_post_date_rewriting() {
 		$this->make_post( 0 );
 
-		$this->assertTrue( remove_filter( 'the_date', 'relative_post_date', 999 ) );
+		$this->assertTrue( remove_filter( 'get_the_date', 'relative_post_date', 999 ) );
 
-		$date = $this->post_date_text();
-		$this->assertSame( $date, apply_filters( 'the_date', $date, '', '', '' ) );
+		$this->assertSame( $this->post_date_text(), get_the_date( '', $this->post ) );
 
-		add_filter( 'the_date', 'relative_post_date', 999, 4 );
+		add_filter( 'get_the_date', 'relative_post_date', 999 );
 	}
 
 	public function test_remove_filter_still_disables_the_comment_date_rewriting() {

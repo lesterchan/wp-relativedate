@@ -36,15 +36,33 @@ class RelativeDate {
 	 * Register hooks.
 	 *
 	 * The four filters are registered against global function names rather than
-	 * against methods of this class, and at the priorities and argument counts
-	 * they have always used. Both matter: remove_filter() with those names is
-	 * the documented way to opt a template out, and each callback's second
-	 * parameter is $display_ago_only, so accepting more of core's arguments
-	 * would turn "ago only" on site-wide.
+	 * methods of this class, at priority 999 and accepting a single argument.
+	 * Both matter: remove_filter() with those names is the documented way to
+	 * opt a template out, and each callback's second parameter is
+	 * $display_ago_only, so accepting more of core's arguments would hand it a
+	 * format string and turn "ago only" on site-wide. RelativeDate_Context
+	 * exists precisely so those arguments can be read without widening a hook.
+	 *
+	 * All four are getters. Before 2.0.0 the post pair was on the_date and
+	 * the_time, which fire only for those two template functions -- every
+	 * default theme since Twenty Nineteen builds its post meta from
+	 * get_the_date() instead, so the plugin did nothing there. Core's the_date()
+	 * and the_time() call the getters internally, so hooking the getters alone
+	 * covers both and cannot apply the relative form twice. The comment pair
+	 * has always been on the getters, so this makes the two consistent.
+	 *
+	 * One thing this still does not reach, and cannot: core's Post Date block.
+	 * Since WP 6.9 render_block_core_post_date() resolves the date through
+	 * Block Bindings and formats it with wp_date(), never calling get_the_date()
+	 * and applying no filter of its own, so a block theme's post date stays
+	 * plain. Core's Comment Date block does still call get_comment_date(), which
+	 * is why comments do work there.
 	 */
 	private function __construct() {
-		add_filter( 'the_date', 'relative_post_date', 999, 4 );
-		add_filter( 'the_time', 'relative_post_time', 999 );
+		RelativeDate_Context::register();
+
+		add_filter( 'get_the_date', 'relative_post_date', 999 );
+		add_filter( 'get_the_time', 'relative_post_time', 999 );
 		add_filter( 'get_comment_date', 'relative_comment_date', 999 );
 		add_filter( 'get_comment_time', 'relative_comment_time', 999 );
 

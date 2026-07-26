@@ -47,6 +47,7 @@ define( 'WP_RELATIVEDATE_VERSION', '2.0.0' );
 define( 'WP_RELATIVEDATE_MAIN_FILE', __FILE__ );
 
 require_once __DIR__ . '/includes/class-relativedate-core.php';
+require_once __DIR__ . '/includes/class-relativedate-context.php';
 require_once __DIR__ . '/includes/template-tags.php';
 require_once __DIR__ . '/includes/class-relativedate.php';
 

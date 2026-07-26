@@ -38,6 +38,9 @@ abstract class RelativeDate_TestCase extends WP_UnitTestCase {
 		unset( $GLOBALS['post'], $GLOBALS['comment'] );
 		$GLOBALS['currentday']  = '';
 		$GLOBALS['previousday'] = '';
+
+		// A capture left behind by a previous test must not answer for this one.
+		RelativeDate_Context::reset();
 	}
 
 	/**

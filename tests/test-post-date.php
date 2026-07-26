@@ -142,19 +142,69 @@ class Test_RelativeDate_Post_Date extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * Core hands the filter $before . $date . $after already concatenated, so
-	 * the plugin strips the tags back off and re-wraps. Locking this stops a
-	 * refactor from doubling the wrapper.
+	 * get_the_date() is what every default theme since Twenty Nineteen builds
+	 * its post meta from, and before 2.0.0 the plugin did not touch it.
 	 */
-	public function test_the_filter_does_not_double_the_wrapper_core_already_applied() {
-		$this->make_post( 0 );
-
-		$date = $this->post_date_text();
+	public function test_get_the_date_returns_the_relative_form() {
+		$this->skip_if_crosses_year( 3 * DAY_IN_SECONDS );
+		$post = $this->make_post( 3 * DAY_IN_SECONDS );
 
 		$this->assertSame(
-			'<b>Today</b>',
-			apply_filters( 'the_date', '<b>' . $date . '</b>', '', '<b>', '</b>' )
+			$this->post_date_text() . ' (3 days ago)',
+			get_the_date( '', $post )
 		);
+	}
+
+	/**
+	 * the_date() builds its output by calling get_the_date(), so the relative
+	 * form has to arrive exactly once. Two registrations would render
+	 * "July 24, 2026 (3 days ago) (3 days ago)".
+	 */
+	public function test_the_date_applies_the_relative_form_exactly_once() {
+		$this->skip_if_crosses_year( 3 * DAY_IN_SECONDS );
+		$this->make_post( 3 * DAY_IN_SECONDS );
+
+		// is_new_day() gates the_date(); without this it returns an empty string.
+		$GLOBALS['currentday']  = mysql2date( 'd.m.y', $this->post->post_date, false );
+		$GLOBALS['previousday'] = '';
+
+		ob_start();
+		the_date( '', '<b>', '</b>' );
+		$out = ob_get_clean();
+
+		$this->assertSame( '<b>' . $this->post_date_text() . ' (3 days ago)</b>', $out );
+	}
+
+	/**
+	 * the_date() prints nothing for the second and later posts sharing a day,
+	 * and never reaches the getter to do it.
+	 */
+	public function test_the_date_still_prints_nothing_for_a_repeated_day() {
+		$this->make_post( 0 );
+
+		$GLOBALS['currentday']  = 'same';
+		$GLOBALS['previousday'] = 'same';
+
+		ob_start();
+		the_date( '', '<b>', '</b>' );
+
+		$this->assertSame( '', ob_get_clean() );
+	}
+
+	/**
+	 * Core's Post Date block calls get_the_date() twice -- once for the visible
+	 * text and once for the <time datetime> attribute. Relativising the second
+	 * would turn a valid ISO 8601 timestamp into the word "Today".
+	 */
+	public function test_machine_readable_formats_are_left_alone() {
+		$post = $this->make_post( 0 );
+
+		$this->assertMatchesRegularExpression(
+			'/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/',
+			get_the_date( 'c', $post )
+		);
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_the_date( 'U', $post ) );
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_the_time( 'U', $post ) );
 	}
 
 	public function test_a_future_post_keeps_its_plain_date() {

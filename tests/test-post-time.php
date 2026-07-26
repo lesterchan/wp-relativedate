@@ -107,11 +107,24 @@ class Test_RelativeDate_Post_Time extends RelativeDate_TestCase {
 	}
 
 	public function test_the_filter_is_wired_up() {
-		$this->make_post( 330 );
+		$post = $this->make_post( 330 );
 
 		$this->assertSame(
 			$this->post_time_text() . ' (5 minutes ago)',
-			apply_filters( 'the_time', $this->post_time_text(), '' )
+			get_the_time( '', $post )
 		);
+	}
+
+	/**
+	 * the_time() builds its output by calling get_the_time(), so the relative
+	 * form has to arrive exactly once rather than twice.
+	 */
+	public function test_the_time_applies_the_relative_form_exactly_once() {
+		$this->make_post( 330 );
+
+		ob_start();
+		the_time();
+
+		$this->assertSame( $this->post_time_text() . ' (5 minutes ago)', ob_get_clean() );
 	}
 }

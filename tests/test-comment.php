@@ -34,6 +34,26 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 		}
 	}
 
+	/**
+	 * Skip when the core function cannot be handed a comment.
+	 *
+	 * get_comment_time() only took ( $format, $gmt, $translate ) until WP 6.2,
+	 * so on the 6.0 floor the comment can come from nowhere but the global and
+	 * there is no argument for the plugin to capture. This asks the function
+	 * itself rather than comparing version strings.
+	 *
+	 * @param string $function Core function name.
+	 * @param int    $needed   Parameter count required.
+	 * @return void
+	 */
+	protected function skip_without_comment_argument( $function, $needed ) {
+		$reflection = new ReflectionFunction( $function );
+
+		if ( $reflection->getNumberOfParameters() < $needed ) {
+			$this->markTestSkipped( "{$function}() does not accept a comment argument on this version of WordPress." );
+		}
+	}
+
 	public function test_a_comment_from_today_reads_today() {
 		$this->make_comment( 0 );
 
@@ -118,20 +138,10 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * get_comment_date() and get_comment_time() are routinely called with the
-	 * comment passed as an argument and no $comment global set. The
-	 * recent-comments widget does it, and so does core's Comment Date block,
-	 * which is how every block theme renders a comment date.
-	 *
-	 * Before 2.0.0 both callbacks dereferenced the global unconditionally, so
-	 * that raised "Attempt to read property on null" -- a fatal under WP_DEBUG,
-	 * verified in a browser on Twenty Twenty-Five.
-	 *
-	 * These two tests pin the graceful outcome, not a working one: the plugin
-	 * passes the date straight through there, so comment dates get no relative
-	 * form in a block theme. Fixing that needs the comment core passes as the
-	 * filter's third argument, which these callbacks cannot accept -- their own
-	 * second parameter is $display_ago_only. See test-backcompat.php.
+	 * With nothing in scope at all -- no global, no capture -- the callbacks
+	 * hand their input straight back rather than raising. Before 2.0.0 they
+	 * dereferenced the global unconditionally, which raised "Attempt to read
+	 * property on null", a fatal under WP_DEBUG.
 	 */
 	public function test_no_comment_in_scope_returns_the_date_untouched() {
 		unset( $GLOBALS['comment'] );
@@ -153,5 +163,43 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 			'TIME (5 minutes ago)',
 			apply_filters( 'get_comment_time', 'TIME', '', false, true, null )
 		);
+	}
+
+	/**
+	 * The block-theme path. Core's Comment Date block calls
+	 * get_comment_date( $format, $comment ) and never sets the $comment global,
+	 * so before 2.0.0 the plugin had nothing to read -- it raised a fatal, and
+	 * once that was guarded it simply did nothing. RelativeDate_Context now
+	 * captures the comment core passed and hands it over.
+	 */
+	public function test_a_comment_passed_as_an_argument_gets_the_relative_form() {
+		$comment = $this->make_comment( 0 );
+		unset( $GLOBALS['comment'] );
+
+		$this->assertSame( 'Today', get_comment_date( '', $comment ) );
+	}
+
+	public function test_a_comment_time_passed_as_an_argument_gets_the_relative_form() {
+		$this->skip_without_comment_argument( 'get_comment_time', 4 );
+
+		$comment = $this->make_comment( 330 );
+		unset( $GLOBALS['comment'] );
+
+		$this->assertStringEndsWith( ' (5 minutes ago)', get_comment_time( '', false, true, $comment ) );
+	}
+
+	/**
+	 * The same block asks for 'c' to fill a <time datetime> attribute, and for
+	 * 'U' to feed human_time_diff(). Neither can do anything with "Today".
+	 */
+	public function test_machine_readable_formats_are_left_alone() {
+		$comment = $this->make_comment( 0 );
+
+		$this->assertMatchesRegularExpression(
+			'/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/',
+			get_comment_date( 'c', $comment )
+		);
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_date( 'U', $comment ) );
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_time( 'U', false, true, $comment ) );
 	}
 }
