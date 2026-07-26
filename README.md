@@ -133,7 +133,8 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 * That was a bug in 1.51.1, fixed in 2.0.0. `relative_post_the_date()` was escaping its own `$before` and `$after` arguments. Upgrading is the fix; no theme change is needed.
 
 ### My post dates are still plain on a block theme
-* Since WordPress 6.9 the core Post Date block resolves the date through Block Bindings and formats it itself, without calling `get_the_date()` or offering a filter, so no plugin can change what it prints. Comment dates are unaffected — the Comment Date block still calls `get_comment_date()` — and post dates work normally on classic themes and anywhere a template calls `the_date()`, `get_the_date()`, `the_time()` or `get_the_time()`.
+* This affects WordPress 6.9 and later only. From 6.9 the core Post Date block resolves the date through Block Bindings and formats it itself, without calling `get_the_date()` or offering a filter, so no plugin can change what it prints. On WordPress 6.0 to 6.8 that block still calls `get_the_date()` and relative post dates work on block themes too.
+* Comment dates are unaffected on every supported version — the Comment Date block still calls `get_comment_date()`. Post dates also work normally on classic themes and anywhere a template calls `the_date()`, `get_the_date()`, `the_time()` or `get_the_time()`.
 * To get a relative post date in a block template, use the `[relativedate]` shortcode or call `relative_post_the_date()` from a block pattern or template part.
 
 ### I used `ago_only="false"` and now the date is back
