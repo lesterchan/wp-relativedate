@@ -79,6 +79,24 @@ class Test_RelativeDate_BackCompat extends RelativeDate_TestCase {
 	}
 
 	/**
+	 * The plugin has only ever hooked the_date() and the_time(), never their
+	 * get_ counterparts, and 2.0.0 did not change that.
+	 *
+	 * It is worth pinning because it is the reason the plugin looks inert on a
+	 * modern theme: get_the_date() does not fire the 'the_date' filter, and
+	 * every default theme since Twenty Nineteen builds its post meta from the
+	 * getters. Verified in a browser on Twenty Twenty-One, where the post date
+	 * renders plain while an explicit the_date() call beside it does not.
+	 *
+	 * Hooking the getters would fix that and would also double up wherever a
+	 * theme calls both, so it is a decision rather than an oversight.
+	 */
+	public function test_the_plugin_does_not_hook_the_getter_filters() {
+		$this->assertFalse( has_filter( 'get_the_date', 'relative_post_date' ) );
+		$this->assertFalse( has_filter( 'get_the_time', 'relative_post_time' ) );
+	}
+
+	/**
 	 * The documented escape hatch: a theme that wants core's plain dates back
 	 * on one template removes the filter.
 	 */

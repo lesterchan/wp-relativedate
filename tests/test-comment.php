@@ -118,11 +118,20 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * get_comment_date() and get_comment_time() are routinely called with an
-	 * explicit comment ID from outside the comment loop -- the recent-comments
-	 * widget does exactly that. Before 2.0.0 both callbacks dereferenced the
-	 * $comment global unconditionally, so that raised "Attempt to read property
-	 * on null", which WP_DEBUG turns into a fatal.
+	 * get_comment_date() and get_comment_time() are routinely called with the
+	 * comment passed as an argument and no $comment global set. The
+	 * recent-comments widget does it, and so does core's Comment Date block,
+	 * which is how every block theme renders a comment date.
+	 *
+	 * Before 2.0.0 both callbacks dereferenced the global unconditionally, so
+	 * that raised "Attempt to read property on null" -- a fatal under WP_DEBUG,
+	 * verified in a browser on Twenty Twenty-Five.
+	 *
+	 * These two tests pin the graceful outcome, not a working one: the plugin
+	 * passes the date straight through there, so comment dates get no relative
+	 * form in a block theme. Fixing that needs the comment core passes as the
+	 * filter's third argument, which these callbacks cannot accept -- their own
+	 * second parameter is $display_ago_only. See test-backcompat.php.
 	 */
 	public function test_no_comment_in_scope_returns_the_date_untouched() {
 		unset( $GLOBALS['comment'] );
