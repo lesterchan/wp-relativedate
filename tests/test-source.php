@@ -133,6 +133,34 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'Requires PHP: 7.4', $this->readme() );
 	}
 
+	/**
+	 * Header lines need two trailing spaces to render as separate lines.
+	 *
+	 * Markdown joins consecutive lines into one paragraph unless each is ended
+	 * with a hard line break, so a missing pair renders as
+	 * "License: GPLv2 or later License URI: https://..." on GitHub. It is
+	 * invisible in the source and in a diff, which is exactly why it wants a
+	 * test. The last line needs none, having nothing after it to run into.
+	 */
+	public function test_every_readme_header_line_but_the_last_ends_in_a_hard_break() {
+		$header = substr( $this->readme(), 0, (int) strpos( $this->readme(), "\n\n" ) );
+		$lines  = explode( "\n", $header );
+
+		// The first line is the "# WP-RelativeDate" heading, not a header field.
+		$fields = array_slice( $lines, 1 );
+		$last   = array_pop( $fields );
+
+		foreach ( $fields as $line ) {
+			$this->assertStringEndsWith(
+				'  ',
+				$line,
+				"Needs two trailing spaces or it merges with the line below: {$line}"
+			);
+		}
+
+		$this->assertStringStartsWith( 'License URI:', $last );
+	}
+
 	public function test_the_readme_lists_at_most_five_tags() {
 		preg_match( '/^Tags:\s*(.+?)\s*$/m', $this->readme(), $matches );
 
