@@ -24,9 +24,9 @@ class Test_RelativeDate_Timezone extends RelativeDate_TestCase {
 	/**
 	 * Switch the site to a named timezone.
 	 *
-	 * gmt_offset is cleared alongside it: WP prefers timezone_string when both
-	 * are set, and leaving a stale offset behind would hide a bug where the
-	 * plugin read the wrong one.
+	 * The gmt_offset option is cleared alongside it: WP prefers timezone_string
+	 * when both are set, and leaving a stale offset behind would hide a bug
+	 * where the plugin read the wrong one.
 	 *
 	 * @param string $timezone A PHP timezone identifier.
 	 * @return void

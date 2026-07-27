@@ -37,20 +37,20 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 	/**
 	 * Skip when the core function cannot be handed a comment.
 	 *
-	 * get_comment_time() only took ( $format, $gmt, $translate ) until WP 6.2,
-	 * so on the 6.0 floor the comment can come from nowhere but the global and
-	 * there is no argument for the plugin to capture. This asks the function
-	 * itself rather than comparing version strings.
+	 * Core's get_comment_time() only took ( $format, $gmt, $translate ) until
+	 * WP 6.2, so on the 6.0 floor the comment can come from nowhere but the
+	 * global and there is no argument for the plugin to capture. This asks the
+	 * function itself rather than comparing version strings.
 	 *
-	 * @param string $function Core function name.
-	 * @param int    $needed   Parameter count required.
+	 * @param string $function_name Core function name.
+	 * @param int    $needed        Parameter count required.
 	 * @return void
 	 */
-	protected function skip_without_comment_argument( $function, $needed ) {
-		$reflection = new ReflectionFunction( $function );
+	protected function skip_without_comment_argument( $function_name, $needed ) {
+		$reflection = new ReflectionFunction( $function_name );
 
 		if ( $reflection->getNumberOfParameters() < $needed ) {
-			$this->markTestSkipped( "{$function}() does not accept a comment argument on this version of WordPress." );
+			$this->markTestSkipped( "{$function_name}() does not accept a comment argument on this version of WordPress." );
 		}
 	}
 

@@ -236,7 +236,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	public function test_every_translation_call_uses_the_plugin_text_domain() {
 		$code = relativedate_test_source_code();
 
-		preg_match_all( "/(?:__|_n)\((.*?)\);/s", $code, $calls );
+		preg_match_all( '/(?:__|_n)\((.*?)\);/s', $code, $calls );
 
 		foreach ( $calls[1] as $arguments ) {
 			$this->assertStringContainsString(
