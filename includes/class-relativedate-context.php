@@ -137,6 +137,12 @@ class RelativeDate_Context {
 	/**
 	 * Drop both stashes.
 	 *
+	 * Nothing in the plugin calls this: the two take_*() methods already clear
+	 * as they read, which is what keeps a capture from outliving the filter it
+	 * belongs to. It exists for the test suite, which has to guarantee one test
+	 * cannot inherit a stash from the last one. Deliberately kept rather than
+	 * dead code.
+	 *
 	 * @return void
 	 */
 	public static function reset() {
