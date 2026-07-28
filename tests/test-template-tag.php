@@ -93,6 +93,18 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 		);
 	}
 
+	/**
+	 * The echoing branch runs the assembled string through wp_kses_post().
+	 *
+	 * That is what lets the phpcs escaping sniff pass without a suppression,
+	 * and it costs the tag nothing a theme would actually use.
+	 */
+	public function test_a_script_tag_in_before_does_not_reach_the_page() {
+		$this->make_post( 0 );
+
+		$this->assertSame( 'Today', $this->render( '', '<script>alert(1)</script>', '' ) );
+	}
+
 	public function test_before_and_after_are_returned_as_markup_too() {
 		$this->make_post( 0 );
 

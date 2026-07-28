@@ -170,11 +170,16 @@ if ( ! function_exists( 'relative_post_the_date' ) ) {
 		if ( $display ) {
 			/*
 			 * $before and $after carry theme-supplied markup, exactly as they do
-			 * in core's the_date() that this tag replaces, and core echoes them
-			 * raw too. 1.51.1 wrapped this in esc_html() and every theme passing
-			 * a wrapper got its tags rendered as literal text.
+			 * in core's the_date() that this tag replaces. 1.51.1 wrapped this in
+			 * esc_html() and every theme passing a wrapper got its tags rendered
+			 * as literal text, so escaping the string is not an option.
+			 *
+			 * wp_kses_post() rather than no filtering at all: it keeps every tag
+			 * a theme would plausibly wrap a date in -- headings, spans, divs,
+			 * links -- while a $before assembled from something a visitor
+			 * supplied cannot smuggle a <script> through the tag.
 			 */
-			echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo wp_kses_post( $output );
 			return;
 		}
 
