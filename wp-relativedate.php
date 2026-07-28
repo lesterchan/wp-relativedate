@@ -65,6 +65,7 @@ define( 'WP_RELATIVEDATE_DIR', plugin_dir_path( __FILE__ ) );
  */
 define( 'WP_RELATIVEDATE_URL', plugin_dir_url( __FILE__ ) );
 
+require_once WP_RELATIVEDATE_DIR . 'includes/class-wp-relativedate-options.php';
 require_once WP_RELATIVEDATE_DIR . 'includes/class-wp-relativedate-core.php';
 require_once WP_RELATIVEDATE_DIR . 'includes/class-wp-relativedate-context.php';
 require_once WP_RELATIVEDATE_DIR . 'includes/template-tags.php';

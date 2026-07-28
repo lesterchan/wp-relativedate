@@ -59,6 +59,7 @@ class WP_RelativeDate {
 	 * is why comments do work there.
 	 */
 	private function __construct() {
+		WP_RelativeDate_Options::register();
 		WP_RelativeDate_Context::register();
 
 		add_filter( 'get_the_date', 'relative_post_date', 999 );
