@@ -1,6 +1,6 @@
 <?php
 /**
- * relative_post_date() -- the 'the_date' filter callback.
+ * The relative_post_date() callback, on the 'get_the_date' filter.
  *
  * These lock the rendered strings the plugin has produced since 1.20. The
  * refactor in 2.0.0 is only allowed to change the code behind them.
@@ -127,8 +127,8 @@ class Test_RelativeDate_Post_Date extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * the_date() passes an empty string for the second and later posts sharing
-	 * a day, and expects nothing back. Before 2.0.0 this fell out of a
+	 * Core's the_date() passes an empty string for the second and later posts
+	 * sharing a day, and expects nothing back. Before 2.0.0 this fell out of a
 	 * comparison against an undefined $previous_day global that was always
 	 * null; the behaviour it produced is the contract, not the mechanism.
 	 */
@@ -142,8 +142,8 @@ class Test_RelativeDate_Post_Date extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * get_the_date() is what every default theme since Twenty Nineteen builds
-	 * its post meta from, and before 2.0.0 the plugin did not touch it.
+	 * Core's get_the_date() is what every default theme since Twenty Nineteen
+	 * builds its post meta from, and before 2.0.0 the plugin did not touch it.
 	 */
 	public function test_get_the_date_returns_the_relative_form() {
 		$this->skip_if_crosses_year( 3 * DAY_IN_SECONDS );
@@ -156,8 +156,8 @@ class Test_RelativeDate_Post_Date extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * the_date() builds its output by calling get_the_date(), so the relative
-	 * form has to arrive exactly once. Two registrations would render
+	 * Core's the_date() builds its output by calling get_the_date(), so the
+	 * relative form has to arrive exactly once. Two registrations would render
 	 * "July 24, 2026 (3 days ago) (3 days ago)".
 	 */
 	public function test_the_date_applies_the_relative_form_exactly_once() {
@@ -176,8 +176,8 @@ class Test_RelativeDate_Post_Date extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * the_date() prints nothing for the second and later posts sharing a day,
-	 * and never reaches the getter to do it.
+	 * Core's the_date() prints nothing for the second and later posts sharing a
+	 * day, and never reaches the getter to do it.
 	 */
 	public function test_the_date_still_prints_nothing_for_a_repeated_day() {
 		$this->make_post( 0 );
@@ -217,8 +217,8 @@ class Test_RelativeDate_Post_Date extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * get_the_date() is filterable from places with no post in scope, and a
-	 * warning-as-exception there takes the whole page down under WP_DEBUG.
+	 * Core's get_the_date() is filterable from places with no post in scope,
+	 * and a warning-as-exception there takes the whole page down under WP_DEBUG.
 	 */
 	public function test_no_post_in_scope_returns_the_input_untouched() {
 		unset( $GLOBALS['post'] );

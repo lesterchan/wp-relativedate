@@ -56,10 +56,10 @@ class Test_RelativeDate_Shortcodes extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * ago_only="false" is the form the README has documented since 1.51, and it
-	 * has never worked: the attribute arrived as the string "false", which a
-	 * (bool) cast reports as true, so the documented way of asking for the full
-	 * date produced the opposite. Every other WordPress shortcode reads these
+	 * The ago_only="false" spelling is what the README has documented since
+	 * 1.51, and it never worked: the attribute arrived as the string "false",
+	 * which a (bool) cast reports as true, so the documented way of asking for
+	 * the full date produced the opposite. Every other WordPress shortcode reads
 	 * the way wp_validate_boolean() does, and now so does this one.
 	 */
 	public function test_relativedate_ago_only_false_keeps_the_date() {

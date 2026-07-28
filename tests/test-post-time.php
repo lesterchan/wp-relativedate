@@ -1,6 +1,6 @@
 <?php
 /**
- * relative_post_time() -- the 'the_time' filter callback.
+ * The relative_post_time() callback, on the 'get_the_time' filter.
  *
  * @package WP-RelativeDate
  */
@@ -116,8 +116,8 @@ class Test_RelativeDate_Post_Time extends RelativeDate_TestCase {
 	}
 
 	/**
-	 * the_time() builds its output by calling get_the_time(), so the relative
-	 * form has to arrive exactly once rather than twice.
+	 * Core's the_time() builds its output by calling get_the_time(), so the
+	 * relative form has to arrive exactly once rather than twice.
 	 */
 	public function test_the_time_applies_the_relative_form_exactly_once() {
 		$this->make_post( 330 );

@@ -1,6 +1,6 @@
 <?php
 /**
- * relative_post_the_date() -- the plugin's drop-in replacement for the_date().
+ * The relative_post_the_date() tag, a drop-in replacement for the_date().
  *
  * @package WP-RelativeDate
  */

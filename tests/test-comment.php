@@ -1,6 +1,6 @@
 <?php
 /**
- * relative_comment_date() and relative_comment_time().
+ * The comment callbacks: relative_comment_date() and relative_comment_time().
  *
  * Both callbacks pass their input through untouched and only ever append to
  * it, so the fixtures below hand them the opaque markers DATE and TIME rather

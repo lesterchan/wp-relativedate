@@ -176,8 +176,8 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	}
 
 	/**
-	 * translate.wordpress.org handles this, and since WP 6.7 calling it as
-	 * early as this plugin used to trips _doing_it_wrong.
+	 * The catalogue comes from translate.wordpress.org, and since WP 6.7 calling
+	 * load_plugin_textdomain() this early trips _doing_it_wrong.
 	 */
 	public function test_the_plugin_does_not_load_its_own_textdomain() {
 		$this->assertStringNotContainsString( 'load_plugin_textdomain', relativedate_test_source_code() );
@@ -188,8 +188,8 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	}
 
 	/**
-	 * forums.lesterchan.net is gone, and the rest of these had drifted to http
-	 * over twenty years. Code spans are exempt: they document example input.
+	 * The old forums.lesterchan.net is gone, and the rest of these had drifted
+	 * to http over twenty years. Code spans are exempt: they document input.
 	 */
 	public function test_no_insecure_or_dead_links_remain() {
 		$readme = preg_replace( '/`[^`]*`/', '', $this->readme() );
@@ -283,8 +283,8 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	}
 
 	/**
-	 * translate.wordpress.org builds the catalogue, and Travis has been dead
-	 * for these repos for years.
+	 * The catalogue is built by translate.wordpress.org, and Travis has been
+	 * dead for these repos for years.
 	 */
 	public function test_no_abandoned_build_or_translation_artefacts_ship() {
 		$root = dirname( __DIR__ );
