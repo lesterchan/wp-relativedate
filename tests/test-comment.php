@@ -20,7 +20,7 @@
  * @covers ::relative_comment_date
  * @covers ::relative_comment_time
  */
-class Test_RelativeDate_Comment extends RelativeDate_TestCase {
+class Test_RelativeDate_Comment extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Skip a fixture whose date falls in a different calendar year to today.
@@ -31,26 +31,6 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 	protected function skip_if_crosses_year( $seconds_ago ) {
 		if ( $this->ago( $seconds_ago )->format( 'Y' ) !== $this->now()->format( 'Y' ) ) {
 			$this->markTestSkipped( 'Fixture crosses a year boundary; the plugin bails to the plain date there by design.' );
-		}
-	}
-
-	/**
-	 * Skip when the core function cannot be handed a comment.
-	 *
-	 * Core's get_comment_time() only took ( $format, $gmt, $translate ) until
-	 * WP 6.2, so on the 6.0 floor the comment can come from nowhere but the
-	 * global and there is no argument for the plugin to capture. This asks the
-	 * function itself rather than comparing version strings.
-	 *
-	 * @param string $function_name Core function name.
-	 * @param int    $needed        Parameter count required.
-	 * @return void
-	 */
-	protected function skip_without_comment_argument( $function_name, $needed ) {
-		$reflection = new ReflectionFunction( $function_name );
-
-		if ( $reflection->getNumberOfParameters() < $needed ) {
-			$this->markTestSkipped( "{$function_name}() does not accept a comment argument on this version of WordPress." );
 		}
 	}
 
@@ -169,7 +149,7 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 	 * The block-theme path. Core's Comment Date block calls
 	 * get_comment_date( $format, $comment ) and never sets the $comment global,
 	 * so before 2.0.0 the plugin had nothing to read -- it raised a fatal, and
-	 * once that was guarded it simply did nothing. RelativeDate_Context now
+	 * once that was guarded it simply did nothing. WP_RelativeDate_Context now
 	 * captures the comment core passed and hands it over.
 	 */
 	public function test_a_comment_passed_as_an_argument_gets_the_relative_form() {
@@ -180,8 +160,6 @@ class Test_RelativeDate_Comment extends RelativeDate_TestCase {
 	}
 
 	public function test_a_comment_time_passed_as_an_argument_gets_the_relative_form() {
-		$this->skip_without_comment_argument( 'get_comment_time', 4 );
-
 		$comment = $this->make_comment( 330 );
 		unset( $GLOBALS['comment'] );
 

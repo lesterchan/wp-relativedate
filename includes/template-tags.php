@@ -6,13 +6,13 @@
  * relative_post_the_date() is called directly by themes, and the other four are
  * the registered filter callbacks -- remove_filter() against those names is the
  * only way to opt a template out of the automatic rewriting, the plugin having
- * no settings screen. Since 2.0.0 they are thin wrappers over RelativeDate_Core.
+ * no settings screen. Since 2.0.0 they are thin wrappers over WP_RelativeDate_Core.
  *
  * Their signatures do not move either. The second parameter of each callback is
  * $display_ago_only, so none of the hooks may be widened to accept more of
  * core's arguments: doing so would pass a date format string into it and turn
  * "ago only" on for every date on the site. Whatever they need from those
- * arguments comes from RelativeDate_Context, which captures them one priority
+ * arguments comes from WP_RelativeDate_Context, which captures them one priority
  * earlier.
  *
  * The hooks themselves did move in 2.0.0: the post pair went from the_date and
@@ -38,10 +38,10 @@ if ( ! function_exists( 'relative_post_date' ) ) {
 	 * @return string
 	 */
 	function relative_post_date( $the_date, $d = '', $before = '', $after = '', $display_ago_only = false ) {
-		$context = RelativeDate_Context::take_post();
+		$context = WP_RelativeDate_Context::take_post();
 
 		// Leave <time datetime> attributes and 'U' timestamps alone.
-		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+		if ( null !== $context && WP_RelativeDate_Context::is_machine_format( $context['format'] ) ) {
 			return $the_date;
 		}
 
@@ -56,7 +56,7 @@ if ( ! function_exists( 'relative_post_date' ) ) {
 			return $the_date;
 		}
 
-		return RelativeDate_Core::relative_date( $post->post_date, $the_date, $before, $after, $display_ago_only );
+		return WP_RelativeDate_Core::relative_date( $post->post_date, $the_date, $before, $after, $display_ago_only );
 	}
 }
 
@@ -69,9 +69,9 @@ if ( ! function_exists( 'relative_post_time' ) ) {
 	 * @return string
 	 */
 	function relative_post_time( $current_timeformat, $display_ago_only = false ) {
-		$context = RelativeDate_Context::take_post();
+		$context = WP_RelativeDate_Context::take_post();
 
-		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+		if ( null !== $context && WP_RelativeDate_Context::is_machine_format( $context['format'] ) ) {
 			return $current_timeformat;
 		}
 
@@ -81,7 +81,7 @@ if ( ! function_exists( 'relative_post_time' ) ) {
 			return $current_timeformat;
 		}
 
-		return RelativeDate_Core::relative_time( $post->post_date, $current_timeformat, $display_ago_only );
+		return WP_RelativeDate_Core::relative_time( $post->post_date, $current_timeformat, $display_ago_only );
 	}
 }
 
@@ -94,9 +94,9 @@ if ( ! function_exists( 'relative_comment_date' ) ) {
 	 * @return string
 	 */
 	function relative_comment_date( $current_dateformat, $display_ago_only = false ) {
-		$context = RelativeDate_Context::take_comment();
+		$context = WP_RelativeDate_Context::take_comment();
 
-		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+		if ( null !== $context && WP_RelativeDate_Context::is_machine_format( $context['format'] ) ) {
 			return $current_dateformat;
 		}
 
@@ -112,7 +112,7 @@ if ( ! function_exists( 'relative_comment_date' ) ) {
 			return $current_dateformat;
 		}
 
-		return RelativeDate_Core::relative_date( $comment->comment_date, $current_dateformat, '', '', $display_ago_only );
+		return WP_RelativeDate_Core::relative_date( $comment->comment_date, $current_dateformat, '', '', $display_ago_only );
 	}
 }
 
@@ -125,9 +125,9 @@ if ( ! function_exists( 'relative_comment_time' ) ) {
 	 * @return string
 	 */
 	function relative_comment_time( $current_timeformat, $display_ago_only = false ) {
-		$context = RelativeDate_Context::take_comment();
+		$context = WP_RelativeDate_Context::take_comment();
 
-		if ( null !== $context && RelativeDate_Context::is_machine_format( $context['format'] ) ) {
+		if ( null !== $context && WP_RelativeDate_Context::is_machine_format( $context['format'] ) ) {
 			return $current_timeformat;
 		}
 
@@ -137,7 +137,7 @@ if ( ! function_exists( 'relative_comment_time' ) ) {
 			return $current_timeformat;
 		}
 
-		return RelativeDate_Core::relative_time( $comment->comment_date, $current_timeformat, $display_ago_only );
+		return WP_RelativeDate_Core::relative_time( $comment->comment_date, $current_timeformat, $display_ago_only );
 	}
 }
 
@@ -165,7 +165,7 @@ if ( ! function_exists( 'relative_post_the_date' ) ) {
 
 		$the_date = mysql2date( empty( $d ) ? get_option( 'date_format' ) : $d, $post->post_date );
 
-		$output = RelativeDate_Core::relative_date( $post->post_date, $the_date, $before, $after, $display_ago_only );
+		$output = WP_RelativeDate_Core::relative_date( $post->post_date, $the_date, $before, $after, $display_ago_only );
 
 		if ( $display ) {
 			/*

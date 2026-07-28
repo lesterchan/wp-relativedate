@@ -8,7 +8,7 @@
 /**
  * Pins the site clock and builds posts and comments at controlled offsets.
  */
-abstract class RelativeDate_TestCase extends WP_UnitTestCase {
+abstract class WP_RelativeDate_TestCase extends WP_UnitTestCase {
 
 	/**
 	 * A post used as the global $post by the fixture helpers.
@@ -40,7 +40,7 @@ abstract class RelativeDate_TestCase extends WP_UnitTestCase {
 		$GLOBALS['previousday'] = '';
 
 		// A capture left behind by a previous test must not answer for this one.
-		RelativeDate_Context::reset();
+		WP_RelativeDate_Context::reset();
 	}
 
 	/**

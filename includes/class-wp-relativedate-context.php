@@ -26,7 +26,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Stash of the object and format belonging to the filter currently running.
  */
-class RelativeDate_Context {
+class WP_RelativeDate_Context {
 
 	/**
 	 * Priority of the capture filters. One below the callbacks that read them.

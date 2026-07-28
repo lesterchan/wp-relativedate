@@ -6,10 +6,10 @@
  */
 
 /**
- * @covers RelativeDate::shortcode_date
- * @covers RelativeDate::shortcode_time
+ * @covers WP_RelativeDate::shortcode_date
+ * @covers WP_RelativeDate::shortcode_time
  */
-class Test_RelativeDate_Shortcodes extends RelativeDate_TestCase {
+class Test_RelativeDate_Shortcodes extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Skip a fixture whose date falls in a different calendar year to today.

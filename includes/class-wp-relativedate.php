@@ -10,19 +10,19 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Wires the plugin's filters and shortcodes up.
  */
-class RelativeDate {
+class WP_RelativeDate {
 
 	/**
 	 * Sole instance.
 	 *
-	 * @var RelativeDate|null
+	 * @var WP_RelativeDate|null
 	 */
 	private static $instance = null;
 
 	/**
 	 * Retrieve, creating on first call.
 	 *
-	 * @return RelativeDate
+	 * @return WP_RelativeDate
 	 */
 	public static function get_instance() {
 		if ( null === self::$instance ) {
@@ -40,7 +40,7 @@ class RelativeDate {
 	 * Both matter: remove_filter() with those names is the documented way to
 	 * opt a template out, and each callback's second parameter is
 	 * $display_ago_only, so accepting more of core's arguments would hand it a
-	 * format string and turn "ago only" on site-wide. RelativeDate_Context
+	 * format string and turn "ago only" on site-wide. WP_RelativeDate_Context
 	 * exists precisely so those arguments can be read without widening a hook.
 	 *
 	 * All four are getters. Before 2.0.0 the post pair was on the_date and
@@ -59,7 +59,7 @@ class RelativeDate {
 	 * is why comments do work there.
 	 */
 	private function __construct() {
-		RelativeDate_Context::register();
+		WP_RelativeDate_Context::register();
 
 		add_filter( 'get_the_date', 'relative_post_date', 999 );
 		add_filter( 'get_the_time', 'relative_post_time', 999 );

@@ -74,14 +74,14 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 * FIXED: Post dates now work on any theme using `get_the_date()` or `get_the_time()`, which is every classic theme since Twenty Nineteen. The plugin previously only hooked `the_date()` and `the_time()`, so it appeared to do nothing on most themes.
 * FIXED: Comment dates now work on block themes. Core's Comment Date block passes the comment as an argument and never sets the global the plugin used to read.
 * CHANGED: The post callbacks moved from `the_date`/`the_time` to `get_the_date`/`get_the_time`. If you opted a template out with `remove_filter( 'the_date', 'relative_post_date', 999 )`, name the getter instead.
-* NEW: Restructured into `includes/`, with the date and time calculations in a `RelativeDate_Core` class.
+* NEW: Restructured into `includes/`, with the date and time calculations in a `WP_RelativeDate_Core` class.
 * NEW: Added a PHPUnit test suite and GitHub Actions CI.
 * FIXED: `relative_post_the_date()` no longer escapes `$before` and `$after`, which had been rendering `<h2>` and friends as literal text since 1.51.1.
 * FIXED: `ago_only="false"` now means false. The documented spelling had always been read as true.
 * FIXED: Post and comment dates no longer raise "Attempt to read property on null" when there is no post or comment in scope, which a recent-comments widget could trigger.
 * FIXED: Content dated ahead of the server clock no longer renders "(-300 seconds ago)".
 * FIXED: Removed `load_plugin_textdomain()`, which trips `_doing_it_wrong` on WordPress 6.7 and later.
-* CHANGED: The two shortcode callbacks are now methods on the `RelativeDate` class. Shortcodes are removed by tag, so `remove_shortcode( 'relativedate' )` is unaffected.
+* CHANGED: The two shortcode callbacks are now methods on the `WP_RelativeDate` class. Shortcodes are removed by tag, so `remove_shortcode( 'relativedate' )` is unaffected.
 
 ### 1.51.1
 * NEW: Bump to WordPress 7.0

@@ -127,10 +127,10 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	}
 
 	public function test_both_files_declare_the_same_floors() {
-		$this->assertStringContainsString( ' * Requires at least: 6.0', $this->plugin_file() );
-		$this->assertStringContainsString( ' * Requires PHP: 7.4', $this->plugin_file() );
-		$this->assertStringContainsString( 'Requires at least: 6.0', $this->readme() );
-		$this->assertStringContainsString( 'Requires PHP: 7.4', $this->readme() );
+		$this->assertStringContainsString( ' * Requires at least: 6.8', $this->plugin_file() );
+		$this->assertStringContainsString( ' * Requires PHP: 8.2', $this->plugin_file() );
+		$this->assertStringContainsString( 'Requires at least: 6.8', $this->readme() );
+		$this->assertStringContainsString( 'Requires PHP: 8.2', $this->readme() );
 	}
 
 	/**

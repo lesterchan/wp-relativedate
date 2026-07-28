@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Turns a stored datetime into "Today", "3 days ago", "5 minutes ago".
  */
-class RelativeDate_Core {
+class WP_RelativeDate_Core {
 
 	/**
 	 * Render a date relative to today.

@@ -8,7 +8,7 @@
 /**
  * @covers ::relative_post_time
  */
-class Test_RelativeDate_Post_Time extends RelativeDate_TestCase {
+class Test_RelativeDate_Post_Time extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Assert a "N seconds ago" phrase, allowing for the clock moving between

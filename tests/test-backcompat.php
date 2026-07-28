@@ -6,7 +6,7 @@
  * directly, and remove_filter() against the four callback names is the only
  * way to opt a template out of the automatic date rewriting -- the plugin has
  * no settings screen. Moving any of them onto a class would break both
- * silently, so 2.0.0 keeps them and forwards to RelativeDate_Core.
+ * silently, so 2.0.0 keeps them and forwards to WP_RelativeDate_Core.
  *
  * @package WP-RelativeDate
  */
@@ -18,7 +18,7 @@
  * @covers ::relative_comment_time
  * @covers ::relative_post_the_date
  */
-class Test_RelativeDate_BackCompat extends RelativeDate_TestCase {
+class Test_RelativeDate_BackCompat extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Callback name => [ hook, priority, accepted args ].
