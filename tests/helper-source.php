@@ -17,7 +17,7 @@
  *
  * @return string[] Absolute paths.
  */
-function relativedate_test_source_files() {
+function wp_relativedate_test_source_files() {
 	$root = dirname( __DIR__ );
 
 	return array_merge(
@@ -37,10 +37,10 @@ function relativedate_test_source_files() {
  * @param string[] $skip Basenames to leave out.
  * @return string
  */
-function relativedate_test_source_code( array $skip = array() ) {
+function wp_relativedate_test_source_code( array $skip = array() ) {
 	$code = '';
 
-	foreach ( relativedate_test_source_files() as $file ) {
+	foreach ( wp_relativedate_test_source_files() as $file ) {
 		if ( in_array( basename( $file ), $skip, true ) ) {
 			continue;
 		}
@@ -57,6 +57,6 @@ function relativedate_test_source_code( array $skip = array() ) {
  * @param string $relative Path relative to the plugin root.
  * @return string
  */
-function relativedate_test_read( $relative ) {
+function wp_relativedate_test_read( $relative ) {
 	return (string) file_get_contents( dirname( __DIR__ ) . '/' . $relative );
 }

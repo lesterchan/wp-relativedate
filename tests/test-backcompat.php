@@ -18,7 +18,7 @@
  * @covers ::relative_comment_time
  * @covers ::relative_post_the_date
  */
-class Test_RelativeDate_BackCompat extends WP_RelativeDate_TestCase {
+class WP_RelativeDate_BackCompat_Test extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Callback name => [ hook, priority, accepted args ].

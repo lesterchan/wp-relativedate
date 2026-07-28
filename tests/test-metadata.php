@@ -1,11 +1,16 @@
 <?php
 /**
- * Release invariants, asserted against the source rather than at runtime.
+ * The release invariants, asserted from the source and from the stored rows.
  *
- * These are the things a restructuring quietly breaks and nothing notices until
- * a release fails its pre-flight months later: a header field that drifted out
- * of the canonical order, a new directory shipped without its silence guard, a
- * version bumped in one file of three.
+ * These are the house rules every plugin in this family shares, and every one
+ * of them has been broken by an ordinary edit at some point: a header field
+ * that drifted out of the canonical order, a new directory shipped without its
+ * silence guard, a version bumped in one file of three, a readme header line
+ * that lost the two trailing spaces holding it apart from the next.
+ *
+ * They are the things a restructuring quietly breaks and nothing notices until
+ * a release fails its pre-flight months later, so catching them here is far
+ * cheaper than catching them there.
  *
  * @package WP-RelativeDate
  */
@@ -13,7 +18,7 @@
 /**
  * @coversNothing
  */
-class Test_RelativeDate_Source extends WP_UnitTestCase {
+class WP_RelativeDate_Metadata_Test extends WP_RelativeDate_TestCase {
 
 	const VERSION = '2.0.0';
 
@@ -23,7 +28,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	 * @return string
 	 */
 	protected function plugin_file() {
-		return relativedate_test_read( 'wp-relativedate.php' );
+		return wp_relativedate_test_read( 'wp-relativedate.php' );
 	}
 
 	/**
@@ -32,7 +37,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	 * @return string
 	 */
 	protected function readme() {
-		return relativedate_test_read( 'README.md' );
+		return wp_relativedate_test_read( 'README.md' );
 	}
 
 	/**
@@ -64,7 +69,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 		return array_keys( $found );
 	}
 
-	public function test_the_version_agrees_across_all_three_places() {
+	public function test_version_matches_everywhere() {
 		$this->assertStringContainsString( ' * Version: ' . self::VERSION, $this->plugin_file() );
 		$this->assertStringContainsString( "define( 'WP_RELATIVEDATE_VERSION', '" . self::VERSION . "' );", $this->plugin_file() );
 		$this->assertStringContainsString( 'Stable tag: ' . self::VERSION, $this->readme() );
@@ -126,7 +131,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 		$this->assertSame( $expected, $fields[1] );
 	}
 
-	public function test_both_files_declare_the_same_floors() {
+	public function test_requires_headers_match_readme() {
 		$this->assertStringContainsString( ' * Requires at least: 6.8', $this->plugin_file() );
 		$this->assertStringContainsString( ' * Requires PHP: 8.2', $this->plugin_file() );
 		$this->assertStringContainsString( 'Requires at least: 6.8', $this->readme() );
@@ -142,7 +147,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	 * invisible in the source and in a diff, which is exactly why it wants a
 	 * test. The last line needs none, having nothing after it to run into.
 	 */
-	public function test_every_readme_header_line_but_the_last_ends_in_a_hard_break() {
+	public function test_every_readme_header_line_keeps_its_line_break() {
 		$header = substr( $this->readme(), 0, (int) strpos( $this->readme(), "\n\n" ) );
 		$lines  = explode( "\n", $header );
 
@@ -180,7 +185,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	 * load_plugin_textdomain() this early trips _doing_it_wrong.
 	 */
 	public function test_the_plugin_does_not_load_its_own_textdomain() {
-		$this->assertStringNotContainsString( 'load_plugin_textdomain', relativedate_test_source_code() );
+		$this->assertStringNotContainsString( 'load_plugin_textdomain', wp_relativedate_test_source_code() );
 	}
 
 	public function test_the_readme_has_no_translations_section() {
@@ -199,7 +204,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 		$this->assertStringNotContainsString( 'forums.lesterchan.net', $readme );
 	}
 
-	public function test_every_directory_holding_php_has_a_silence_guard() {
+	public function test_every_directory_has_an_index_php() {
 		foreach ( $this->php_directories() as $directory ) {
 			$this->assertFileExists(
 				$directory . '/index.php',
@@ -247,7 +252,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 			'Yesterday',
 		);
 
-		$code = relativedate_test_source_code();
+		$code = wp_relativedate_test_source_code();
 
 		preg_match_all( "/(?:__|_n|_x|esc_html__|esc_attr__)\(\s*'((?:[^'\\\\]|\\\\.)*)'/", $code, $singles );
 		preg_match_all( "/_n\(\s*'(?:[^'\\\\]|\\\\.)*'\s*,\s*'((?:[^'\\\\]|\\\\.)*)'/", $code, $plurals );
@@ -262,7 +267,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	 * Every one of them must carry the plugin's own text domain.
 	 */
 	public function test_every_translation_call_uses_the_plugin_text_domain() {
-		$code = relativedate_test_source_code();
+		$code = wp_relativedate_test_source_code();
 
 		preg_match_all( '/(?:__|_n)\((.*?)\);/s', $code, $calls );
 
@@ -276,7 +281,7 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 	}
 
 	public function test_the_gpl_licence_is_shipped() {
-		$licence = relativedate_test_read( 'LICENSE' );
+		$licence = wp_relativedate_test_read( 'LICENSE' );
 
 		$this->assertStringContainsString( 'GNU GENERAL PUBLIC LICENSE', $licence );
 		$this->assertStringContainsString( 'Version 2, June 1991', $licence );
@@ -299,5 +304,228 @@ class Test_RelativeDate_Source extends WP_UnitTestCase {
 				"No .{$extension} files: translate.wordpress.org builds the catalogue."
 			);
 		}
+	}
+
+	public function test_canonical_lesterchan_urls() {
+		$this->assertSame(
+			'https://lesterchan.net/portfolio/programming/php/',
+			$this->header_field( 'Plugin URI' )
+		);
+		$this->assertSame( 'https://lesterchan.net', $this->header_field( 'Author URI' ) );
+		$this->assertSame( 'https://lesterchan.net/site/donation/', $this->readme_field( 'Donate link' ) );
+		$this->assertSame(
+			'https://www.gnu.org/licenses/gpl-2.0.html',
+			$this->header_field( 'License URI' )
+		);
+		$this->assertSame( 'https://www.gnu.org/licenses/gpl-2.0.html', $this->readme_field( 'License URI' ) );
+	}
+
+	/**
+	 * One name, in every plugin. A second contributor has to be added on
+	 * wordpress.org as well, so a name here that is not on the listing silently
+	 * does nothing.
+	 */
+	public function test_contributors_is_gamerz_only() {
+		$this->assertSame( 'GamerZ', $this->readme_field( 'Contributors' ) );
+	}
+
+	public function test_text_domain_is_the_plugin_slug() {
+		$this->assertSame( 'wp-relativedate', $this->header_field( 'Text Domain' ) );
+		$this->assertSame( '/languages', $this->header_field( 'Domain Path' ) );
+		$this->assertSame( 'wp-relativedate', WP_RELATIVEDATE_SLUG );
+	}
+
+	/**
+	 * The second-level headings are a closed set in a fixed order.
+	 *
+	 * Third-level ones are not: Features, the usage subsections and every
+	 * changelog version live below these.
+	 */
+	public function test_readme_sections_are_the_canonical_set() {
+		preg_match_all( '/^## (.+?)\s*$/m', $this->readme(), $sections );
+
+		$this->assertSame(
+			array(
+				'Description',
+				'Usage',
+				'Frequently Asked Questions',
+				'Screenshots',
+				'Changelog',
+				'Upgrade Notice',
+			),
+			$sections[1]
+		);
+	}
+
+	/**
+	 * Five prefixes, and nothing else.
+	 *
+	 * The listing on wordpress.org renders the changelog verbatim, so a stray
+	 * "Important:" or a lowercase "New:" is visible to every reader of it.
+	 */
+	public function test_changelog_prefixes_are_canonical() {
+		$readme    = $this->readme();
+		$changelog = substr( $readme, (int) strpos( $readme, '## Changelog' ) );
+		$changelog = substr( $changelog, 0, (int) strpos( $changelog, "\n## Upgrade Notice" ) );
+
+		preg_match_all( '/^\* (.+?):/m', $changelog, $bullets );
+
+		$this->assertNotEmpty( $bullets[1], 'The changelog must carry bullets.' );
+
+		foreach ( $bullets[1] as $prefix ) {
+			$this->assertContains(
+				$prefix . ':',
+				array( 'BREAKING:', 'NEW:', 'CHANGED:', 'FIXED:', 'NOTE:' ),
+				"'{$prefix}:' is not one of the five allowed changelog prefixes."
+			);
+		}
+	}
+
+	/**
+	 * WP-RelativeDate ships no JavaScript at all, which is the strongest form
+	 * of the house rule: nothing to enqueue, so nothing to depend on jQuery.
+	 */
+	public function test_no_jquery_is_enqueued() {
+		$code = wp_relativedate_test_source_code();
+
+		$this->assertStringNotContainsStringIgnoringCase( 'jquery', $code );
+		$this->assertStringNotContainsString(
+			'wp_enqueue_script',
+			$code,
+			'The plugin registers no scripts, so it can declare no dependencies.'
+		);
+		$this->assertSame( array(), (array) glob( dirname( __DIR__ ) . '/js/*.js' ) );
+	}
+
+	/**
+	 * No plugin in this family ships a second, mirrored stylesheet: the front
+	 * end uses CSS logical properties instead, so one sheet serves both
+	 * directions. This one ships no stylesheet at all.
+	 */
+	public function test_no_rtl_stylesheet_is_registered() {
+		$root = dirname( __DIR__ );
+
+		$this->assertSame( array(), (array) glob( $root . '/*-rtl.css' ) );
+		$this->assertSame( array(), (array) glob( $root . '/css/*-rtl.css' ) );
+		$this->assertStringNotContainsString(
+			'wp_style_add_data',
+			wp_relativedate_test_source_code(),
+			"No plugin registers 'rtl' style data."
+		);
+	}
+
+	/**
+	 * The upgrade markers live in their own row, holding those two keys and no
+	 * others. Anything else in here means a marker has drifted back into the
+	 * settings array, which is the bug this shape exists to make impossible.
+	 */
+	public function test_version_row_holds_exactly_plugin_and_db() {
+		WP_RelativeDate_Options::maybe_upgrade();
+
+		$markers = get_option( WP_RelativeDate_Options::VERSION );
+
+		$this->assertIsArray( $markers, 'wp_relativedate_version must be an array.' );
+
+		$keys = array_keys( $markers );
+		sort( $keys );
+
+		$this->assertSame( array( 'db', 'plugin' ), $keys );
+		$this->assertSame( WP_RELATIVEDATE_VERSION, $markers['plugin'] );
+		$this->assertSame( WP_RELATIVEDATE_DB_VERSION, $markers['db'] );
+	}
+
+	/**
+	 * The sanitiser is a function of what was posted, nothing more.
+	 *
+	 * A version marker that survives a round trip through it is a marker living
+	 * in the settings array, and a settings save would then be able to write
+	 * over the upgrade routine's work. Handing it every spelling the family has
+	 * historically used is the regression guard.
+	 */
+	public function test_settings_sanitizer_never_stores_version_markers() {
+		$clean = WP_RelativeDate_Options::sanitize(
+			array(
+				'version'    => '1.51.1',
+				'db_version' => '3',
+				'versions'   => array( 'plugin' => '1.51.1' ),
+			)
+		);
+
+		$this->assertIsArray( $clean );
+
+		foreach ( array( 'version', 'db_version', 'versions' ) as $key ) {
+			$this->assertArrayNotHasKey( $key, $clean, "'{$key}' belongs in wp_relativedate_version." );
+		}
+	}
+
+	/**
+	 * Deleting the plugin leaves nothing behind.
+	 *
+	 * The assertion is deliberately a LIKE over wp_options rather than two
+	 * delete_option() checks: a row added later and forgotten in uninstall.php
+	 * is exactly the failure this is here to catch. The multisite config runs
+	 * the same test through uninstall.php's get_sites() branch.
+	 */
+	public function test_uninstall_removes_every_option_row() {
+		WP_RelativeDate_Options::maybe_upgrade();
+
+		$this->assertNotEmpty(
+			$this->stored_option_names(),
+			'There should be rows to remove before uninstall runs.'
+		);
+
+		if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+			define( 'WP_UNINSTALL_PLUGIN', 'wp-relativedate/wp-relativedate.php' );
+		}
+
+		require_once dirname( __DIR__ ) . '/uninstall.php';
+
+		wp_cache_flush();
+
+		$this->assertSame(
+			array(),
+			$this->stored_option_names(),
+			'uninstall.php must remove every wp_relativedate_* row.'
+		);
+	}
+
+	/**
+	 * Every option row the plugin owns, read straight from the table.
+	 *
+	 * @return string[]
+	 */
+	protected function stored_option_names() {
+		global $wpdb;
+
+		return (array) $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+				$wpdb->esc_like( 'wp_relativedate_' ) . '%'
+			)
+		);
+	}
+
+	/**
+	 * A field from the main plugin file's header docblock.
+	 *
+	 * @param string $field Field name.
+	 * @return string
+	 */
+	protected function header_field( $field ) {
+		$data = get_file_data( dirname( __DIR__ ) . '/wp-relativedate.php', array( $field => $field ) );
+
+		return $data[ $field ];
+	}
+
+	/**
+	 * A field from the readme's header block.
+	 *
+	 * @param string $field Field name.
+	 * @return string
+	 */
+	protected function readme_field( $field ) {
+		preg_match( '/^' . preg_quote( $field, '/' ) . ':\s*(.+?)\s*$/m', $this->readme(), $matches );
+
+		return isset( $matches[1] ) ? $matches[1] : '';
 	}
 }

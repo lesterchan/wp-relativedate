@@ -9,7 +9,7 @@
  * @covers WP_RelativeDate::shortcode_date
  * @covers WP_RelativeDate::shortcode_time
  */
-class Test_RelativeDate_Shortcodes extends WP_RelativeDate_TestCase {
+class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Skip a fixture whose date falls in a different calendar year to today.

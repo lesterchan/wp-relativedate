@@ -11,7 +11,7 @@
 /**
  * @covers ::relative_post_date
  */
-class Test_RelativeDate_Post_Date extends WP_RelativeDate_TestCase {
+class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Skip a fixture whose date falls in a different calendar year to today.

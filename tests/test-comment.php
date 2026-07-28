@@ -20,7 +20,7 @@
  * @covers ::relative_comment_date
  * @covers ::relative_comment_time
  */
-class Test_RelativeDate_Comment extends WP_RelativeDate_TestCase {
+class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Skip a fixture whose date falls in a different calendar year to today.

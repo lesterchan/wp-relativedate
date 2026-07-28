@@ -19,7 +19,7 @@
  * @covers WP_RelativeDate_Core::relative_date
  * @covers WP_RelativeDate_Core::relative_time
  */
-class Test_RelativeDate_Timezone extends WP_RelativeDate_TestCase {
+class WP_RelativeDate_Timezone_Test extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Switch the site to a named timezone.
