@@ -81,7 +81,7 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 * `ago_only="false"` has always been documented as meaning false, but until 2.0.0 the plugin read it as true. If you were relying on that, use `ago_only="true"` to keep the ago-only output.
 
 ### Does the plugin store anything in my database?
-* Two rows, both tiny. `wp_relativedate_options` is empty, because there is nothing to configure, and `wp_relativedate_version` records the version last run so an upgrade knows what it is upgrading from. Deleting the plugin from the Plugins screen removes both.
+* One row, and a tiny one. There is nothing to configure, so the plugin stores no settings at all - only `wp_relativedate_version`, which records the version last run so that an upgrade knows what it is upgrading from. Deleting the plugin from the Plugins screen removes it.
 
 ## Screenshots
 
@@ -96,7 +96,7 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 * BREAKING: Requires WordPress 6.8 and PHP 8.2, up from 6.0 and 7.4.
 * BREAKING: The post callbacks moved from `the_date`/`the_time` to `get_the_date`/`get_the_time`. If you opted a template out with `remove_filter( 'the_date', 'relative_post_date', 999 )`, name the getter instead.
 * NEW: Restructured into `includes/`, with the date and time calculations in a `WP_RelativeDate_Core` class.
-* NEW: Added the `wp_relativedate_options` and `wp_relativedate_version` rows, and an `uninstall.php` that deletes both on a single site and across a network.
+* NEW: Added the `wp_relativedate_version` row, and an `uninstall.php` that deletes it on a single site and across a network.
 * NEW: Added a PHPUnit test suite and GitHub Actions CI.
 * CHANGED: The two shortcode callbacks are now methods on the `WP_RelativeDate` class. Shortcodes are removed by tag, so `remove_shortcode( 'relativedate' )` is unaffected.
 * FIXED: Post dates now work on any theme using `get_the_date()` or `get_the_time()`, which is every classic theme since Twenty Nineteen. The plugin previously only hooked `the_date()` and `the_time()`, so it appeared to do nothing on most themes.
@@ -154,4 +154,4 @@ The first release since 1.51.1, and five things about it are worth knowing befor
 
 **Markup you pass to `relative_post_the_date()` reaches the page again.** Since 1.51.1 the tag escaped its own `$before` and `$after` arguments, so a theme passing `<h2>` got the literal characters printed instead. Nothing to change on your side; it works again.
 
-The plugin also starts storing two rows in `wp_options`, `wp_relativedate_options` and `wp_relativedate_version`, and deletes both when you delete the plugin. It still has no settings screen, and none of its template tags or shortcodes changed names.
+The plugin also starts storing one row in `wp_options`, `wp_relativedate_version`, and deletes it when you delete the plugin. It still has no settings screen, and none of its template tags or shortcodes changed names.
