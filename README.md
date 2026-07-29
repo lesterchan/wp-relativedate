@@ -27,6 +27,9 @@ There is nothing to configure and no settings screen. WP-RelativeDate rewrites y
  * X minutes ago
  * X hours ago
 
+### Donations
+I spent most of my free time creating, updating, maintaining and supporting these plugins, if you really love my plugins and could spare me a couple of bucks, I will really appreciate it. If not feel free to use it without any obligations.
+
 ## Usage
 You need not do anything. WP-RelativeDate will automatically modify your post/comment date or time display. No text will be added if the post or comment is more than a month old.
 
