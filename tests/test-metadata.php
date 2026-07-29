@@ -435,27 +435,23 @@ class WP_RelativeDate_Metadata_Test extends WP_RelativeDate_TestCase {
 	}
 
 	/**
-	 * The sanitiser is a function of what was posted, nothing more.
+	 * Elsewhere in the family this slot holds
+	 * test_settings_sanitizer_never_stores_version_markers(), which guards
+	 * against a version marker being kept inside the settings array.
 	 *
-	 * A version marker that survives a round trip through it is a marker living
-	 * in the settings array, and a settings save would then be able to write
-	 * over the upgrade routine's work. Handing it every spelling the family has
-	 * historically used is the regression guard.
+	 * WP-RelativeDate has no settings, no settings row and no sanitiser (§2.1),
+	 * so there is nothing for a marker to hide in. §7.2 substitutes this
+	 * assertion instead: the settings row must never come into existence. If a
+	 * later change reintroduces one, the sanitiser test has to come back with
+	 * it, and this failing is the reminder.
 	 */
-	public function test_settings_sanitizer_never_stores_version_markers() {
-		$clean = WP_RelativeDate_Options::sanitize(
-			array(
-				'version'    => '1.51.1',
-				'db_version' => '3',
-				'versions'   => array( 'plugin' => '1.51.1' ),
-			)
+	public function test_no_settings_row_exists_to_hide_a_marker_in() {
+		WP_RelativeDate_Options::maybe_upgrade();
+
+		$this->assertFalse(
+			get_option( 'wp_relativedate_options' ),
+			'WP-RelativeDate is exempt from the settings row; reinstating one needs the sanitiser test back.'
 		);
-
-		$this->assertIsArray( $clean );
-
-		foreach ( array( 'version', 'db_version', 'versions' ) as $key ) {
-			$this->assertArrayNotHasKey( $key, $clean, "'{$key}' belongs in wp_relativedate_version." );
-		}
 	}
 
 	/**

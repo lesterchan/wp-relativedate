@@ -16,10 +16,14 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 /**
  * Delete the plugin's options for the current site.
  *
+ * One row only: WP-RelativeDate has nothing a site owner can configure and so
+ * stores no settings row at all (STANDARDS.md 2.1). If it ever grows one, it
+ * gets deleted here too -- tests/test-metadata.php asserts over wp_options with
+ * a LIKE rather than naming rows, so a forgotten row fails the suite.
+ *
  * @return void
  */
 function wp_relativedate_uninstall_site() {
-	delete_option( 'wp_relativedate_options' );
 	delete_option( 'wp_relativedate_version' );
 }
 
