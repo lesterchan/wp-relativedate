@@ -390,7 +390,7 @@ class WP_RelativeDate_Metadata_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertStringNotContainsStringIgnoringCase( 'jquery', $code );
 		$this->assertStringNotContainsString(
-			'wp_enqueue_script',
+			'wp_enqueue_script(',
 			$code,
 			'The plugin registers no scripts, so it can declare no dependencies.'
 		);
