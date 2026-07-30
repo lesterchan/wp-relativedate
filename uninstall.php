@@ -3,8 +3,8 @@
  * Uninstall WP-RelativeDate.
  *
  * Runs with the plugin inactive, so nothing here may depend on the plugin's
- * own classes or constants being loaded. The two row names are therefore
- * spelled out rather than read from WP_RelativeDate_Options.
+ * own classes or constants being loaded. The row name is therefore spelled out
+ * rather than read from a constant.
  *
  * @package WP-RelativeDate
  */
@@ -16,10 +16,16 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 /**
  * Delete the plugin's options for the current site.
  *
- * One row only: WP-RelativeDate has nothing a site owner can configure and so
- * stores no settings row at all (STANDARDS.md 2.1). If it ever grows one, it
- * gets deleted here too -- tests/test-metadata.php asserts over wp_options with
- * a LIKE rather than naming rows, so a forgotten row fails the suite.
+ * WP-RelativeDate stores nothing (STANDARDS.md 2.1): no settings, no tables,
+ * and not the version markers either. So on a current install this finds
+ * nothing to delete, and that is the point.
+ *
+ * It is still here for the one case that is not current: an early build of the
+ * unreleased 2.0.0 did write wp_relativedate_version, and nothing writes it now,
+ * so uninstall is the only thing that will ever take it off a site that ran that
+ * build. If the plugin ever does grow a row, it gets deleted here too --
+ * tests/test-metadata.php asserts over wp_options with a LIKE rather than naming
+ * rows, so a forgotten row fails the suite.
  *
  * @return void
  */

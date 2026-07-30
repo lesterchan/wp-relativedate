@@ -37,14 +37,12 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WP-RelativeDate version. The last-run value is kept in the wp_relativedate_version row.
+ * WP-RelativeDate version, used to cache-bust the stylesheet.
+ *
+ * Nothing records the last-run value: this plugin stores nothing at all, so
+ * there is no upgrade for it to drive. See STANDARDS.md 2.1.
  */
 define( 'WP_RELATIVEDATE_VERSION', '2.0.0' );
-
-/**
- * Schema counter. Bumped only when the stored rows need reshaping.
- */
-define( 'WP_RELATIVEDATE_DB_VERSION', '1' );
 
 /**
  * WP-RelativeDate slug, which is also the text domain.
@@ -66,7 +64,6 @@ define( 'WP_RELATIVEDATE_DIR', plugin_dir_path( __FILE__ ) );
  */
 define( 'WP_RELATIVEDATE_URL', plugin_dir_url( __FILE__ ) );
 
-require_once WP_RELATIVEDATE_DIR . 'includes/class-wp-relativedate-options.php';
 require_once WP_RELATIVEDATE_DIR . 'includes/class-wp-relativedate-core.php';
 require_once WP_RELATIVEDATE_DIR . 'includes/class-wp-relativedate-context.php';
 require_once WP_RELATIVEDATE_DIR . 'includes/template-tags.php';
