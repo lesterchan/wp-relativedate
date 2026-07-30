@@ -144,7 +144,7 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 ### 2.0.0
 The first release since 1.51.1, and five things about it are worth knowing before you update.
 
-**Your site must be on WordPress 6.8 or later and PHP 8.2 or later.** Anything older will simply not be offered the update. If your host still runs PHP 7.4, ask to be moved to a supported version before updating — 7.4 stopped receiving security fixes in 2022.
+**Your site must be on WordPress 6.8 or later and PHP 8.2 or later.** Anything older will simply not be offered the update. Check `WP-Admin -> Tools -> Site Health -> Info -> Server` for your PHP version; if it is below 8.2, ask your host to move you up. PHP 8.1 and everything before it stopped receiving security fixes.
 
 **Relative dates will start appearing where they never did before.** Since 1.20 the plugin hooked `the_date()` and `the_time()`, which almost no modern theme calls — every default theme since Twenty Nineteen builds its post meta from `get_the_date()` instead. The plugin now hooks the getters, so a theme that showed plain dates for years will show "Today" and "3 days ago" the moment you update. That is the plugin finally doing what it always said it did; if you do not want it on a particular template, see "Turning It Off For One Template" above.
 
