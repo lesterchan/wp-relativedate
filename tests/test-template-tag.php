@@ -98,11 +98,22 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 	 *
 	 * That is what lets the phpcs escaping sniff pass without a suppression,
 	 * and it costs the tag nothing a theme would actually use.
+	 *
+	 * Note what kses does and does not do: it removes the disallowed *tags* and
+	 * keeps the text between them, so this renders "alert(1)Today" rather than
+	 * "Today". That is not a vulnerability -- with no script element left, the
+	 * payload is inert text -- and asserting the text disappears would be
+	 * asserting something wp_kses_post() has never promised. What matters is
+	 * that no executable element survives.
 	 */
 	public function test_a_script_tag_in_before_does_not_reach_the_page() {
 		$this->make_post( 0 );
 
-		$this->assertSame( 'Today', $this->render( '', '<script>alert(1)</script>', '' ) );
+		$rendered = $this->render( '', '<script>alert(1)</script>', '' );
+
+		$this->assertStringNotContainsString( '<script', $rendered, 'the script element must not survive kses.' );
+		$this->assertStringNotContainsString( '</script', $rendered, 'no closing script tag either.' );
+		$this->assertStringEndsWith( 'Today', $rendered, 'the date itself still renders.' );
 	}
 
 	public function test_before_and_after_are_returned_as_markup_too() {
