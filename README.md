@@ -107,39 +107,6 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 * FIXED: Content dated ahead of the server clock no longer renders "(-300 seconds ago)".
 * FIXED: Removed `load_plugin_textdomain()`, which trips `_doing_it_wrong` on WordPress 6.7 and later.
 
-### 1.51.1
-* NEW: Bump to WordPress 7.0
-
-### 1.51
-* NEW: Add in `[relativedate]` and `[relativetime]` shortcode.
-
-### 1.50 (01-06-2009)
-* NEW: Use _n() Instead Of __ngettext() And _n_noop() Instead Of __ngettext_noop()
-
-### 1.40 (12-12-2008)
-* FIXED: Pass In Default Values For $d, $before And $after In relative_post_date()
-
-### 1.31 (16-07-2008)
-* NEW: Works For WordPress 2.6
-* NEW: Better Translation Using __ngetext() by Anna Ozeritskaya
-
-### 1.30 (01-06-2008)
-* NEW: Uses /wp-relativedate/ Folder Instead Of /relativedate/
-* NEW: Uses wp-relativedate.php Instead Of relativedate.php
-
-### 1.20 (01-10-2007)
-* NEW: relative_post_the_date(); Alternative To WordPress the_date()
-
-### 1.11 (01-06-2007)
-* FIXED: Post Of The Same Date But Different Year Still Will Not Display Relative Date
-
-### 1.10 (01-02-2007)
-* NEW: Works For WordPress 2.1 Only
-* NEW: Localization WP-RelativeDate
-
-### 1.00 (01-03-2006)
-* NEW: Initial Release
-
 ## Upgrade Notice
 ### 2.0.0
 The first release since 1.51.1, and five things about it are worth knowing before you update.
