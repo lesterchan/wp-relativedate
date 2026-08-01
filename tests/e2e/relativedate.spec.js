@@ -21,6 +21,55 @@ function uniqueTitle( base ) {
 }
 
 /**
+ * A datetime a whole number of days back, at midday, as WordPress wants it.
+ *
+ * Not `Date.now() - days * 24 * 60 * 60 * 1000`. That is an offset in hours,
+ * and every phrase this plugin produces is about calendar days: a 26 hour
+ * offset is "yesterday" only when the clock is past 02:00, and CI ran the suite
+ * at 01:44 UTC, where it landed two days back. The plugin said "2 days ago",
+ * which was correct, and the test failed. It had always passed here because
+ * nobody runs a suite at two in the morning.
+ *
+ * Midday for the same reason twice over: it is the furthest point from a day
+ * boundary, so neither the hour the suite runs at nor a few hours of difference
+ * between this machine's timezone and the site's can move the date onto another
+ * day.
+ *
+ * The string is built from local parts rather than through toISOString(), which
+ * would convert to UTC -- WordPress reads this field as site local time.
+ *
+ * @param {number} days How many days back.
+ * @return {string} A Y-m-d\TH:i:s datetime.
+ */
+function daysAgo( days ) {
+	const when = new Date();
+
+	when.setHours( 12, 0, 0, 0 );
+	when.setDate( when.getDate() - days );
+
+	const pad = ( n ) => String( n ).padStart( 2, '0' );
+
+	return (
+		when.getFullYear() +
+		'-' +
+		pad( when.getMonth() + 1 ) +
+		'-' +
+		pad( when.getDate() ) +
+		'T12:00:00'
+	);
+}
+
+/**
+ * The calendar year a given number of days back.
+ *
+ * @param {number} days How many days back.
+ * @return {string} The year, as it appears on the page.
+ */
+function yearOf( days ) {
+	return daysAgo( days ).slice( 0, 4 );
+}
+
+/**
  * Publish a post and open it.
  *
  * @param {Object}                          requestUtils The e2e request helper.
@@ -60,11 +109,7 @@ test.describe( 'Relative dates on the front end', () => {
 		page,
 		requestUtils,
 	} ) => {
-		const when = new Date( Date.now() - 3 * 24 * 60 * 60 * 1000 );
-
-		await openPost( requestUtils, page, {
-			date: when.toISOString().slice( 0, 19 ),
-		} );
+		await openPost( requestUtils, page, { date: daysAgo( 3 ) } );
 
 		// Not "Today", and not a bare date either: the default keeps the
 		// formatted date and puts the relative phrase after it in brackets, so a
@@ -73,26 +118,18 @@ test.describe( 'Relative dates on the front end', () => {
 	} );
 
 	test( 'yesterday is named rather than counted', async ( { page, requestUtils } ) => {
-		const when = new Date( Date.now() - 26 * 60 * 60 * 1000 );
-
-		await openPost( requestUtils, page, {
-			date: when.toISOString().slice( 0, 19 ),
-		} );
+		await openPost( requestUtils, page, { date: daysAgo( 1 ) } );
 
 		await expect( page.locator( 'body' ) ).toContainText( 'Yesterday' );
 	} );
 
 	test( 'a date in an earlier year is left alone', async ( { page, requestUtils } ) => {
-		const when = new Date( Date.now() - 800 * 24 * 60 * 60 * 1000 );
-
-		await openPost( requestUtils, page, {
-			date: when.toISOString().slice( 0, 19 ),
-		} );
+		await openPost( requestUtils, page, { date: daysAgo( 800 ) } );
 
 		// "114 weeks ago" tells a reader nothing they wanted to know, so a post
 		// from a different calendar year keeps its date and says nothing else.
 		await expect( page.locator( 'body' ) ).not.toContainText( 'weeks ago' );
-		await expect( page.locator( 'body' ) ).toContainText( String( when.getFullYear() ) );
+		await expect( page.locator( 'body' ) ).toContainText( yearOf( 800 ) );
 	} );
 
 	test( 'the shortcode prints the same phrase inside content', async ( {
@@ -108,10 +145,8 @@ test.describe( 'Relative dates on the front end', () => {
 	} );
 
 	test( 'ago_only drops the formatted date', async ( { page, requestUtils } ) => {
-		const when = new Date( Date.now() - 3 * 24 * 60 * 60 * 1000 );
-
 		await openPost( requestUtils, page, {
-			date: when.toISOString().slice( 0, 19 ),
+			date: daysAgo( 3 ),
 			content: 'A: [relativedate] B: [relativedate ago_only="true"]',
 		} );
 
@@ -129,10 +164,25 @@ test.describe( 'Relative dates on the front end', () => {
 	} );
 
 	test( 'the time shortcode counts in minutes, not days', async ( { page, requestUtils } ) => {
-		const when = new Date( Date.now() - 5 * 60 * 1000 );
+		// Minutes, so this one really is an elapsed-time offset rather than a
+		// calendar day -- and five minutes cannot cross midnight from midday.
+		const when = new Date( Date.now() - ( 5 * 60 * 1000 ) );
+		const pad = ( n ) => String( n ).padStart( 2, '0' );
+		const local =
+			when.getFullYear() +
+			'-' +
+			pad( when.getMonth() + 1 ) +
+			'-' +
+			pad( when.getDate() ) +
+			'T' +
+			pad( when.getHours() ) +
+			':' +
+			pad( when.getMinutes() ) +
+			':' +
+			pad( when.getSeconds() );
 
 		await openPost( requestUtils, page, {
-			date: when.toISOString().slice( 0, 19 ),
+			date: local,
 			content: 'At [relativetime]',
 		} );
 
@@ -192,7 +242,7 @@ test.describe( 'Relative dates on the front end', () => {
 		// No settings, no screen, no menu entry: there is nothing to configure,
 		// and a plugin that adds a menu to say so is a plugin adding a menu.
 		await expect(
-			page.locator( '#adminmenu' ).getByText( 'RelativeDate', { exact: false } )
+			page.locator( '#adminmenu' ).getByText( 'RelativeDate', { exact: false } ),
 		).toHaveCount( 0 );
 	} );
 } );
