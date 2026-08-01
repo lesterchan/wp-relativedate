@@ -108,17 +108,17 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 * FIXED: Removed `load_plugin_textdomain()`, which trips `_doing_it_wrong` on WordPress 6.7 and later.
 
 ## Upgrade Notice
+
 ### 2.0.0
-The first release since 1.51.1, and five things about it are worth knowing before you update.
 
-**Your site must be on WordPress 6.8 or later and PHP 8.2 or later.** Anything older will simply not be offered the update. Check `WP-Admin -> Tools -> Site Health -> Info -> Server` for your PHP version; if it is below 8.2, ask your host to move you up. PHP 8.1 and everything before it stopped receiving security fixes.
+Requires WordPress 6.8 and PHP 8.2.
 
-**Relative dates will start appearing where they never did before.** Since 1.20 the plugin hooked `the_date()` and `the_time()`, which almost no modern theme calls — every default theme since Twenty Nineteen builds its post meta from `get_the_date()` instead. The plugin now hooks the getters, so a theme that showed plain dates for years will show "Today" and "3 days ago" the moment you update. That is the plugin finally doing what it always said it did; if you do not want it on a particular template, see "Turning It Off For One Template" above.
+**Relative dates will start appearing where they never did before.** Since 1.20 the plugin hooked `the_date()` and `the_time()`, which almost no modern theme calls — every default theme since Twenty Nineteen builds its post meta from `get_the_date()` instead. The plugin now hooks the getters, so a theme that showed plain dates for years will show "Today" and "3 days ago" the moment you update. To switch it off for one template, see "Turning It Off For One Template" above.
 
-**If you had turned the plugin off for a template, the line you used has changed.** `remove_filter( 'the_date', 'relative_post_date', 999 )` no longer removes anything. Use `remove_filter( 'get_the_date', 'relative_post_date', 999 )`, and likewise `get_the_time` in place of `the_time`. The two comment filters are unchanged.
+**If you had turned the plugin off for a template, the line has changed.** `remove_filter( 'the_date', 'relative_post_date', 999 )` no longer removes anything; use `get_the_date`, and likewise `get_the_time` in place of `the_time`. The two comment filters are unchanged.
 
-**`ago_only="false"` now does what it says.** Until 2.0.0 the shortcode read the string "false" as true, so `[relativedate ago_only="false"]` printed only "3 days ago" instead of the date. If you were relying on that, change those shortcodes to `ago_only="true"`.
+**`ago_only="false"` now does what it says.** Until 2.0.0 the shortcode read the string "false" as true, so `[relativedate ago_only="false"]` printed only "3 days ago" instead of the date. Change those shortcodes to `ago_only="true"` if you were relying on it.
 
-**Markup you pass to `relative_post_the_date()` reaches the page again.** Since 1.51.1 the tag escaped its own `$before` and `$after` arguments, so a theme passing `<h2>` got the literal characters printed instead. Nothing to change on your side; it works again.
+**Markup passed to `relative_post_the_date()` reaches the page again.** Since 1.51.1 the tag escaped its own `$before` and `$after` arguments, so a theme passing `<h2>` got the literal characters printed.
 
-The plugin also starts storing one row in `wp_options`, `wp_relativedate_version`, and deletes it when you delete the plugin. It still has no settings screen, and none of its template tags or shortcodes changed names.
+The plugin now stores one row, `wp_relativedate_version`, and deletes it on uninstall. There is still no settings screen, and no template tag or shortcode changed name.
