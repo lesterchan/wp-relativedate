@@ -21,32 +21,25 @@ function uniqueTitle( base ) {
 }
 
 /**
- * A datetime a whole number of days back, at midday, as WordPress wants it.
+ * How far the site's wall clock is from this machine's, in milliseconds.
  *
- * Not `Date.now() - days * 24 * 60 * 60 * 1000`. That is an offset in hours,
- * and every phrase this plugin produces is about calendar days: a 26 hour
- * offset is "yesterday" only when the clock is past 02:00, and CI ran the suite
- * at 01:44 UTC, where it landed two days back. The plugin said "2 days ago",
- * which was correct, and the test failed. It had always passed here because
- * nobody runs a suite at two in the morning.
+ * Measured once in beforeAll rather than assumed. See siteNow().
  *
- * Midday for the same reason twice over: it is the furthest point from a day
- * boundary, so neither the hour the suite runs at nor a few hours of difference
- * between this machine's timezone and the site's can move the date onto another
- * day.
+ * @type {number}
+ */
+let siteSkewMs = 0;
+
+/**
+ * Format a datetime the way the REST date field wants it.
  *
- * The string is built from local parts rather than through toISOString(), which
- * would convert to UTC -- WordPress reads this field as site local time.
+ * No timezone suffix, because the field has no timezone: WordPress reads it as
+ * site local time. So toISOString() is exactly wrong here -- it would convert
+ * to UTC and hand the site a wall clock reading that means something else.
  *
- * @param {number} days How many days back.
+ * @param {Date} when The moment, already expressed as a site wall clock.
  * @return {string} A Y-m-d\TH:i:s datetime.
  */
-function daysAgo( days ) {
-	const when = new Date();
-
-	when.setHours( 12, 0, 0, 0 );
-	when.setDate( when.getDate() - days );
-
+function asMysqlDatetime( when ) {
 	const pad = ( n ) => String( n ).padStart( 2, '0' );
 
 	return (
@@ -55,8 +48,72 @@ function daysAgo( days ) {
 		pad( when.getMonth() + 1 ) +
 		'-' +
 		pad( when.getDate() ) +
-		'T12:00:00'
+		'T' +
+		pad( when.getHours() ) +
+		':' +
+		pad( when.getMinutes() ) +
+		':' +
+		pad( when.getSeconds() )
 	);
+}
+
+/**
+ * Now, on the site's clock rather than this machine's.
+ *
+ * Every phrase this plugin produces is measured from current_datetime(), and
+ * every date it is given is a site local one. This machine is not the site: a
+ * developer here runs at UTC+8 while wp-env runs at UTC, so a post dated from
+ * local parts arrives eight hours out. Midday hides that for the day-counting
+ * tests, and cannot hide it for a five minute one -- a post meant to be five
+ * minutes old was stored eight hours in the future, where the plugin correctly
+ * refused to say anything relative at all.
+ *
+ * The skew is not derived from a timezone name or an offset setting, both of
+ * which then have to be reasoned about across DST. It is measured: publish
+ * something, ask the site what time it thinks that was, and keep the
+ * difference. The returned Date reads, in this machine's local time, as the
+ * site's wall clock.
+ *
+ * @return {Date} Site-local now.
+ */
+function siteNow() {
+	return new Date( Date.now() + siteSkewMs );
+}
+
+/**
+ * A datetime a whole number of days back, at midday, on the site's clock.
+ *
+ * Not `Date.now() - days * 24 * 60 * 60 * 1000`. That is an offset in hours,
+ * and every phrase this plugin produces is about calendar days: a 26 hour
+ * offset is "yesterday" only when the clock is past 02:00, and CI ran the suite
+ * at 01:44 UTC, where it landed two days back. The plugin said "2 days ago",
+ * which was correct, and the test failed. It had always passed here because
+ * nobody runs a suite at two in the morning.
+ *
+ * Midday because it is the furthest point from a day boundary, so the hour the
+ * suite runs at cannot move the date onto another day. That is now the only
+ * job it does: the timezone half of the problem belongs to siteNow().
+ *
+ * @param {number} days How many days back.
+ * @return {string} A Y-m-d\TH:i:s datetime.
+ */
+function daysAgo( days ) {
+	const when = siteNow();
+
+	when.setHours( 12, 0, 0, 0 );
+	when.setDate( when.getDate() - days );
+
+	return asMysqlDatetime( when );
+}
+
+/**
+ * A datetime a number of minutes back, on the site's clock.
+ *
+ * @param {number} minutes How many minutes back.
+ * @return {string} A Y-m-d\TH:i:s datetime.
+ */
+function minutesAgo( minutes ) {
+	return asMysqlDatetime( new Date( siteNow().getTime() - ( minutes * 60 * 1000 ) ) );
 }
 
 /**
@@ -92,6 +149,23 @@ async function openPost( requestUtils, page, fields = {} ) {
 
 test.describe( 'Relative dates on the front end', () => {
 	test.beforeAll( async ( { requestUtils } ) => {
+		// Publish something with no date and read back the one WordPress
+		// stamped on it. That is the site's wall clock, straight from the site,
+		// and the gap from this machine's is every timezone question this suite
+		// has to answer. Parsing both as if they were UTC compares the two wall
+		// clock readings rather than the two instants, which is the thing we
+		// want the difference of.
+		const probe = await requestUtils.createPost( {
+			title: 'Clock probe',
+			content: 'Discarded.',
+			status: 'publish',
+		} );
+
+		const siteWallClock = Date.parse( probe.date + 'Z' );
+		const hostWallClock = Date.now() - ( new Date().getTimezoneOffset() * 60 * 1000 );
+
+		siteSkewMs = siteWallClock - hostWallClock;
+
 		await requestUtils.deleteAllPosts();
 	} );
 
@@ -165,24 +239,11 @@ test.describe( 'Relative dates on the front end', () => {
 
 	test( 'the time shortcode counts in minutes, not days', async ( { page, requestUtils } ) => {
 		// Minutes, so this one really is an elapsed-time offset rather than a
-		// calendar day -- and five minutes cannot cross midnight from midday.
-		const when = new Date( Date.now() - ( 5 * 60 * 1000 ) );
-		const pad = ( n ) => String( n ).padStart( 2, '0' );
-		const local =
-			when.getFullYear() +
-			'-' +
-			pad( when.getMonth() + 1 ) +
-			'-' +
-			pad( when.getDate() ) +
-			'T' +
-			pad( when.getHours() ) +
-			':' +
-			pad( when.getMinutes() ) +
-			':' +
-			pad( when.getSeconds() );
-
+		// calendar day. It is also the test with no slack in it: the day tests
+		// can survive a few hours of clock difference between this machine and
+		// the site, and five minutes cannot.
 		await openPost( requestUtils, page, {
-			date: local,
+			date: minutesAgo( 5 ),
 			content: 'At [relativetime]',
 		} );
 
