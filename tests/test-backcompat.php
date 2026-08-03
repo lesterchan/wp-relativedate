@@ -86,8 +86,8 @@ class WP_RelativeDate_BackCompat_Test extends WP_RelativeDate_TestCase {
 	 * "July 24, 2026 (3 days ago) (3 days ago)".
 	 */
 	public function test_the_post_callbacks_are_not_also_on_the_old_hooks() {
-		$this->assertFalse( has_filter( 'the_date', 'relative_post_date' ) );
-		$this->assertFalse( has_filter( 'the_time', 'relative_post_time' ) );
+		$this->assertFalse( has_filter( 'the_date', 'relative_post_date' ), 'The post date callback is on get_the_date only, never the_date as well.' );
+		$this->assertFalse( has_filter( 'the_time', 'relative_post_time' ), 'The post time callback is on get_the_time only, never the_time as well.' );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class WP_RelativeDate_BackCompat_Test extends WP_RelativeDate_TestCase {
 	public function test_remove_filter_still_disables_the_post_date_rewriting() {
 		$this->make_post( 0 );
 
-		$this->assertTrue( remove_filter( 'get_the_date', 'relative_post_date', 999 ) );
+		$this->assertTrue( remove_filter( 'get_the_date', 'relative_post_date', 999 ), 'The documented remove_filter() call finds the callback at priority 999.' );
 
 		$this->assertSame( $this->post_date_text(), get_the_date( '', $this->post ) );
 
@@ -120,7 +120,7 @@ class WP_RelativeDate_BackCompat_Test extends WP_RelativeDate_TestCase {
 	public function test_remove_filter_still_disables_the_comment_date_rewriting() {
 		$this->make_comment( 0 );
 
-		$this->assertTrue( remove_filter( 'get_comment_date', 'relative_comment_date', 999 ) );
+		$this->assertTrue( remove_filter( 'get_comment_date', 'relative_comment_date', 999 ), 'The documented remove_filter() call finds the callback at priority 999.' );
 
 		$this->assertSame( 'DATE', apply_filters( 'get_comment_date', 'DATE', '', null ) );
 

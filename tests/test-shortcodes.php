@@ -24,8 +24,8 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 	}
 
 	public function test_both_shortcodes_are_registered() {
-		$this->assertTrue( shortcode_exists( 'relativedate' ) );
-		$this->assertTrue( shortcode_exists( 'relativetime' ) );
+		$this->assertTrue( shortcode_exists( 'relativedate' ), 'The relativedate shortcode is registered.' );
+		$this->assertTrue( shortcode_exists( 'relativetime' ), 'The relativetime shortcode is registered.' );
 	}
 
 	public function test_relativedate_renders_the_relative_date() {

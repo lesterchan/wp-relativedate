@@ -175,10 +175,11 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertMatchesRegularExpression(
 			'/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/',
-			get_comment_date( 'c', $comment )
+			get_comment_date( 'c', $comment ),
+			'The c format comes back as an ISO 8601 timestamp, not a relative phrase.'
 		);
-		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_date( 'U', $comment ) );
-		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_time( 'U', false, true, $comment ) );
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_date( 'U', $comment ), 'The U format comes back as a Unix timestamp.' );
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_comment_time( 'U', false, true, $comment ), 'The U format comes back as a Unix timestamp.' );
 	}
 
 	public function test_every_machine_format_in_the_list_is_left_alone() {

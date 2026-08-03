@@ -19,9 +19,9 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 	 * @return void
 	 */
 	protected function assertSecondsPhrase( $expected, $actual ) {
-		$this->assertMatchesRegularExpression( '/^\d+ seconds ago$/', $actual );
-		$this->assertGreaterThanOrEqual( $expected, (int) $actual );
-		$this->assertLessThanOrEqual( $expected + 5, (int) $actual );
+		$this->assertMatchesRegularExpression( '/^\d+ seconds ago$/', $actual, 'The phrase reads as a whole number of seconds ago.' );
+		$this->assertGreaterThanOrEqual( $expected, (int) $actual, 'The reported age is not younger than the age the fixture was given.' );
+		$this->assertLessThanOrEqual( $expected + 5, (int) $actual, 'The reported age is within five seconds of the fixture, allowing for a slow run.' );
 	}
 
 	public function test_a_post_from_seconds_ago_appends_the_second_count() {

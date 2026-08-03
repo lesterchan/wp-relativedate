@@ -201,10 +201,11 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertMatchesRegularExpression(
 			'/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/',
-			get_the_date( 'c', $post )
+			get_the_date( 'c', $post ),
+			'The c format comes back as an ISO 8601 timestamp, not a relative phrase.'
 		);
-		$this->assertMatchesRegularExpression( '/^\d+$/', get_the_date( 'U', $post ) );
-		$this->assertMatchesRegularExpression( '/^\d+$/', get_the_time( 'U', $post ) );
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_the_date( 'U', $post ), 'The U format comes back as a Unix timestamp.' );
+		$this->assertMatchesRegularExpression( '/^\d+$/', get_the_time( 'U', $post ), 'The U format comes back as a Unix timestamp.' );
 	}
 
 	public function test_a_future_post_keeps_its_plain_date() {
