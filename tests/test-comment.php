@@ -37,72 +37,72 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 	public function test_a_comment_from_today_reads_today() {
 		$this->make_comment( 0 );
 
-		$this->assertSame( 'Today', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'Today', relative_comment_date( 'DATE' ), 'Today is named rather than counted.' );
 	}
 
 	public function test_a_comment_from_yesterday_reads_yesterday() {
 		$this->skip_if_crosses_year( DAY_IN_SECONDS );
 		$this->make_comment( DAY_IN_SECONDS );
 
-		$this->assertSame( 'Yesterday', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'Yesterday', relative_comment_date( 'DATE' ), 'Yesterday is named rather than counted.' );
 	}
 
 	public function test_a_comment_from_this_week_appends_the_day_count() {
 		$this->skip_if_crosses_year( 4 * DAY_IN_SECONDS );
 		$this->make_comment( 4 * DAY_IN_SECONDS );
 
-		$this->assertSame( 'DATE (4 days ago)', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE (4 days ago)', relative_comment_date( 'DATE' ), 'Inside a week the count is appended to the date rather than replacing it.' );
 	}
 
 	public function test_the_comment_day_count_can_be_rendered_on_its_own() {
 		$this->skip_if_crosses_year( 4 * DAY_IN_SECONDS );
 		$this->make_comment( 4 * DAY_IN_SECONDS );
 
-		$this->assertSame( '4 days ago', relative_comment_date( 'DATE', true ) );
+		$this->assertSame( '4 days ago', relative_comment_date( 'DATE', true ), 'The ago-only form drops the date and keeps the count.' );
 	}
 
 	public function test_a_comment_from_weeks_ago_appends_the_week_count() {
 		$this->skip_if_crosses_year( 15 * DAY_IN_SECONDS );
 		$this->make_comment( 15 * DAY_IN_SECONDS );
 
-		$this->assertSame( 'DATE (3 weeks ago)', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE (3 weeks ago)', relative_comment_date( 'DATE' ), 'Past seven days the count is given in weeks.' );
 	}
 
 	public function test_a_comment_older_than_a_month_keeps_its_plain_date() {
 		$this->skip_if_crosses_year( 31 * DAY_IN_SECONDS );
 		$this->make_comment( 31 * DAY_IN_SECONDS );
 
-		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ), 'Past a month there is no relative form; the date stands as core built it.' );
 	}
 
 	public function test_a_comment_from_a_previous_year_keeps_its_plain_date() {
 		$this->make_comment( 400 * DAY_IN_SECONDS );
 
-		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ), 'A previous year is past the month cutoff, so the plain date stands.' );
 	}
 
 	public function test_a_comment_from_minutes_ago_appends_the_minute_count() {
 		$this->make_comment( 330 );
 
-		$this->assertSame( 'TIME (5 minutes ago)', relative_comment_time( 'TIME' ) );
+		$this->assertSame( 'TIME (5 minutes ago)', relative_comment_time( 'TIME' ), 'Inside an hour the count is given in minutes.' );
 	}
 
 	public function test_the_comment_minute_count_can_be_rendered_on_its_own() {
 		$this->make_comment( 330 );
 
-		$this->assertSame( '5 minutes ago', relative_comment_time( 'TIME', true ) );
+		$this->assertSame( '5 minutes ago', relative_comment_time( 'TIME', true ), 'The ago-only form drops the time and keeps the count.' );
 	}
 
 	public function test_a_comment_from_hours_ago_appends_the_hour_count() {
 		$this->make_comment( (int) ( 2.5 * HOUR_IN_SECONDS ) );
 
-		$this->assertSame( 'TIME (2 hours ago)', relative_comment_time( 'TIME' ) );
+		$this->assertSame( 'TIME (2 hours ago)', relative_comment_time( 'TIME' ), 'Past an hour the count is given in hours.' );
 	}
 
 	public function test_a_comment_from_another_calendar_day_keeps_its_plain_time() {
 		$this->make_comment( DAY_IN_SECONDS );
 
-		$this->assertSame( 'TIME', relative_comment_time( 'TIME' ) );
+		$this->assertSame( 'TIME', relative_comment_time( 'TIME' ), 'The time form is scoped to one calendar day; another day gets no suffix.' );
 	}
 
 	/**
@@ -114,7 +114,7 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 	public function test_a_future_comment_on_the_same_day_gets_no_relative_suffix() {
 		$this->make_comment( -5 * MINUTE_IN_SECONDS );
 
-		$this->assertSame( 'TIME', relative_comment_time( 'TIME' ) );
+		$this->assertSame( 'TIME', relative_comment_time( 'TIME' ), 'A future timestamp gets no suffix rather than a negative count.' );
 	}
 
 	/**
@@ -126,22 +126,23 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 	public function test_no_comment_in_scope_returns_the_date_untouched() {
 		unset( $GLOBALS['comment'] );
 
-		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ), 'With no comment in scope the input is returned untouched.' );
 	}
 
 	public function test_no_comment_in_scope_returns_the_time_untouched() {
 		unset( $GLOBALS['comment'] );
 
-		$this->assertSame( 'TIME', relative_comment_time( 'TIME' ) );
+		$this->assertSame( 'TIME', relative_comment_time( 'TIME' ), 'With no comment in scope the input is returned untouched.' );
 	}
 
 	public function test_the_filters_are_wired_up() {
 		$this->make_comment( 330 );
 
-		$this->assertSame( 'Today', apply_filters( 'get_comment_date', 'DATE', '', null ) );
+		$this->assertSame( 'Today', apply_filters( 'get_comment_date', 'DATE', '', null ), 'The date filter is attached, so core output goes through it.' );
 		$this->assertSame(
 			'TIME (5 minutes ago)',
-			apply_filters( 'get_comment_time', 'TIME', '', false, true, null )
+			apply_filters( 'get_comment_time', 'TIME', '', false, true, null ),
+			'The time filter is attached, so core output goes through it.'
 		);
 	}
 
@@ -156,14 +157,14 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 		$comment = $this->make_comment( 0 );
 		unset( $GLOBALS['comment'] );
 
-		$this->assertSame( 'Today', get_comment_date( '', $comment ) );
+		$this->assertSame( 'Today', get_comment_date( '', $comment ), 'A comment passed as an argument is used instead of the global.' );
 	}
 
 	public function test_a_comment_time_passed_as_an_argument_gets_the_relative_form() {
 		$comment = $this->make_comment( 330 );
 		unset( $GLOBALS['comment'] );
 
-		$this->assertStringEndsWith( ' (5 minutes ago)', get_comment_time( '', false, true, $comment ) );
+		$this->assertStringEndsWith( ' (5 minutes ago)', get_comment_time( '', false, true, $comment ), 'A comment passed as an argument is used for the time too.' );
 	}
 
 	/**
@@ -206,10 +207,10 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 		unset( $GLOBALS['comment'] );
 
 		// This consumes the capture.
-		$this->assertSame( 'Today', get_comment_date( '', $comment ) );
+		$this->assertSame( 'Today', get_comment_date( '', $comment ), 'The captured comment answers the call it was captured for.' );
 
 		// Nothing is in scope any more, so there is nothing to say.
-		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE', relative_comment_date( 'DATE' ), 'The capture is consumed, so the next call has no comment in scope.' );
 	}
 
 	/**
@@ -224,7 +225,7 @@ class WP_RelativeDate_Comment_Test extends WP_RelativeDate_TestCase {
 		// make_comment() left the new comment as the global. Ask about the old
 		// one explicitly: it is far too old for a relative form, so "Today"
 		// here would mean the global had answered for it.
-		$this->assertNotSame( 'Today', get_comment_date( '', $old ) );
-		$this->assertSame( mysql2date( get_option( 'date_format' ), $old->comment_date ), get_comment_date( '', $old ) );
+		$this->assertNotSame( 'Today', get_comment_date( '', $old ), 'A different global does not get the captured comment answer.' );
+		$this->assertSame( mysql2date( get_option( 'date_format' ), $old->comment_date ), get_comment_date( '', $old ), 'The different global gets its own date, built the way core would.' );
 	}
 }

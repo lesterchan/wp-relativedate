@@ -112,7 +112,7 @@ class WP_RelativeDate_BackCompat_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertTrue( remove_filter( 'get_the_date', 'relative_post_date', 999 ), 'The documented remove_filter() call finds the callback at priority 999.' );
 
-		$this->assertSame( $this->post_date_text(), get_the_date( '', $this->post ) );
+		$this->assertSame( $this->post_date_text(), get_the_date( '', $this->post ), 'Once removed, the callback leaves the date exactly as core built it.' );
 
 		add_filter( 'get_the_date', 'relative_post_date', 999 );
 	}
@@ -122,7 +122,7 @@ class WP_RelativeDate_BackCompat_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertTrue( remove_filter( 'get_comment_date', 'relative_comment_date', 999 ), 'The documented remove_filter() call finds the callback at priority 999.' );
 
-		$this->assertSame( 'DATE', apply_filters( 'get_comment_date', 'DATE', '', null ) );
+		$this->assertSame( 'DATE', apply_filters( 'get_comment_date', 'DATE', '', null ), 'Once removed, the callback leaves the comment date exactly as core built it.' );
 
 		add_filter( 'get_comment_date', 'relative_comment_date', 999 );
 	}

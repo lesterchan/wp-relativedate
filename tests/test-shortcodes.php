@@ -34,7 +34,8 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (3 days ago)',
-			do_shortcode( '[relativedate]' )
+			do_shortcode( '[relativedate]' ),
+			'The shortcode renders what the template tag would.'
 		);
 	}
 
@@ -44,7 +45,8 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text( 'Y-m-d' ) . ' (3 days ago)',
-			do_shortcode( '[relativedate date_format="Y-m-d"]' )
+			do_shortcode( '[relativedate date_format="Y-m-d"]' ),
+			'The date_format attribute reaches the underlying format.'
 		);
 	}
 
@@ -52,7 +54,7 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 		$this->skip_if_crosses_year( 3 * DAY_IN_SECONDS );
 		$this->make_post( 3 * DAY_IN_SECONDS );
 
-		$this->assertSame( '3 days ago', do_shortcode( '[relativedate ago_only="true"]' ) );
+		$this->assertSame( '3 days ago', do_shortcode( '[relativedate ago_only="true"]' ), 'ago_only drops the date and keeps the count.' );
 	}
 
 	/**
@@ -68,7 +70,8 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (3 days ago)',
-			do_shortcode( '[relativedate ago_only="false"]' )
+			do_shortcode( '[relativedate ago_only="false"]' ),
+			'ago_only false keeps the date, which is the documented default.'
 		);
 	}
 
@@ -78,9 +81,9 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$expected = $this->post_date_text() . ' (3 days ago)';
 
-		$this->assertSame( $expected, do_shortcode( '[relativedate ago_only="0"]' ) );
-		$this->assertSame( $expected, do_shortcode( '[relativedate ago_only="no"]' ) );
-		$this->assertSame( $expected, do_shortcode( '[relativedate ago_only="off"]' ) );
+		$this->assertSame( $expected, do_shortcode( '[relativedate ago_only="0"]' ), '0 is read as false, not as the string 0.' );
+		$this->assertSame( $expected, do_shortcode( '[relativedate ago_only="no"]' ), 'no is read as false.' );
+		$this->assertSame( $expected, do_shortcode( '[relativedate ago_only="off"]' ), 'off is read as false.' );
 	}
 
 	public function test_relativedate_defaults_to_showing_the_date() {
@@ -89,7 +92,8 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (3 days ago)',
-			do_shortcode( '[relativedate]' )
+			do_shortcode( '[relativedate]' ),
+			'With no attribute at all the date is shown.'
 		);
 	}
 
@@ -98,7 +102,8 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text() . ' (5 minutes ago)',
-			do_shortcode( '[relativetime]' )
+			do_shortcode( '[relativetime]' ),
+			'The shortcode renders what the template tag would.'
 		);
 	}
 
@@ -107,14 +112,15 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text( 'H:i' ) . ' (5 minutes ago)',
-			do_shortcode( '[relativetime time_format="H:i"]' )
+			do_shortcode( '[relativetime time_format="H:i"]' ),
+			'The time_format attribute reaches the underlying format.'
 		);
 	}
 
 	public function test_relativetime_ago_only_true_drops_the_time() {
 		$this->make_post( 330 );
 
-		$this->assertSame( '5 minutes ago', do_shortcode( '[relativetime ago_only="true"]' ) );
+		$this->assertSame( '5 minutes ago', do_shortcode( '[relativetime ago_only="true"]' ), 'ago_only drops the time and keeps the count.' );
 	}
 
 	public function test_relativetime_ago_only_false_keeps_the_time() {
@@ -122,14 +128,15 @@ class WP_RelativeDate_Shortcodes_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text() . ' (5 minutes ago)',
-			do_shortcode( '[relativetime ago_only="false"]' )
+			do_shortcode( '[relativetime ago_only="false"]' ),
+			'ago_only false keeps the time, which is the documented default.'
 		);
 	}
 
 	public function test_shortcodes_render_nothing_with_no_post_in_scope() {
 		unset( $GLOBALS['post'] );
 
-		$this->assertSame( '', do_shortcode( '[relativedate]' ) );
-		$this->assertSame( '', do_shortcode( '[relativetime]' ) );
+		$this->assertSame( '', do_shortcode( '[relativedate]' ), 'With no post in scope the shortcode renders nothing rather than a stray date.' );
+		$this->assertSame( '', do_shortcode( '[relativetime]' ), 'With no post in scope the shortcode renders nothing rather than a stray time.' );
 	}
 }

@@ -35,14 +35,14 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 	public function test_a_post_from_today_reads_today() {
 		$this->make_post( 0 );
 
-		$this->assertSame( 'Today', relative_post_date( $this->post_date_text() ) );
+		$this->assertSame( 'Today', relative_post_date( $this->post_date_text() ), 'Today is named rather than counted.' );
 	}
 
 	public function test_a_post_from_yesterday_reads_yesterday() {
 		$this->skip_if_crosses_year( DAY_IN_SECONDS );
 		$this->make_post( DAY_IN_SECONDS );
 
-		$this->assertSame( 'Yesterday', relative_post_date( $this->post_date_text() ) );
+		$this->assertSame( 'Yesterday', relative_post_date( $this->post_date_text() ), 'Yesterday is named rather than counted.' );
 	}
 
 	public function test_a_post_from_this_week_appends_the_day_count() {
@@ -51,7 +51,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (3 days ago)',
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'Inside a week the count is appended to the date rather than replacing it.'
 		);
 	}
 
@@ -61,7 +62,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			'3 days ago',
-			relative_post_date( $this->post_date_text(), '', '', '', true )
+			relative_post_date( $this->post_date_text(), '', '', '', true ),
+			'The ago-only form drops the date and keeps the count.'
 		);
 	}
 
@@ -75,7 +77,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (1 week ago)',
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'Seven days is a week, not seven days.'
 		);
 	}
 
@@ -85,7 +88,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (2 weeks ago)',
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'Ten days rounds up to two weeks rather than down to one.'
 		);
 	}
 
@@ -95,7 +99,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text(),
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'Past a month there is no relative form; the date stands as core built it.'
 		);
 	}
 
@@ -104,7 +109,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text(),
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'A previous year is past the month cutoff, so the plain date stands.'
 		);
 	}
 
@@ -113,7 +119,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			'<b>Today</b>',
-			relative_post_date( $this->post_date_text(), '', '<b>', '</b>' )
+			relative_post_date( $this->post_date_text(), '', '<b>', '</b>' ),
+			'The wrapper goes around the relative form, not inside it.'
 		);
 	}
 
@@ -122,7 +129,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			'<b>' . $this->post_date_text() . '</b>',
-			relative_post_date( $this->post_date_text(), '', '<b>', '</b>' )
+			relative_post_date( $this->post_date_text(), '', '<b>', '</b>' ),
+			'The wrapper is applied to a plain date too, not only a relative one.'
 		);
 	}
 
@@ -137,7 +145,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			'',
-			(string) relative_post_date( '', '', '<b>', '</b>' )
+			(string) relative_post_date( '', '', '<b>', '</b>' ),
+			'An empty date renders nothing at all, wrapper included.'
 		);
 	}
 
@@ -151,7 +160,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (3 days ago)',
-			get_the_date( '', $post )
+			get_the_date( '', $post ),
+			'The filter is attached, so core output goes through it.'
 		);
 	}
 
@@ -172,7 +182,7 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 		the_date( '', '<b>', '</b>' );
 		$out = ob_get_clean();
 
-		$this->assertSame( '<b>' . $this->post_date_text() . ' (3 days ago)</b>', $out );
+		$this->assertSame( '<b>' . $this->post_date_text() . ' (3 days ago)</b>', $out, 'The relative form is applied once, not once per filter pass.' );
 	}
 
 	/**
@@ -188,7 +198,7 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 		ob_start();
 		the_date( '', '<b>', '</b>' );
 
-		$this->assertSame( '', ob_get_clean() );
+		$this->assertSame( '', ob_get_clean(), 'A repeated day still prints nothing, as core intends the_date to.' );
 	}
 
 	/**
@@ -213,7 +223,8 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text(),
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'A future date gets no suffix rather than a negative count.'
 		);
 	}
 
@@ -224,6 +235,6 @@ class WP_RelativeDate_Post_Date_Test extends WP_RelativeDate_TestCase {
 	public function test_no_post_in_scope_returns_the_input_untouched() {
 		unset( $GLOBALS['post'] );
 
-		$this->assertSame( 'July 27, 2026', relative_post_date( 'July 27, 2026' ) );
+		$this->assertSame( 'July 27, 2026', relative_post_date( 'July 27, 2026' ), 'With no post in scope the input is returned untouched.' );
 	}
 }

@@ -113,7 +113,7 @@ class WP_RelativeDate_Metadata_Test extends Plugin_Metadata_TestCase {
 	 * No Translations section: translate.wordpress.org is the only route in.
 	 */
 	public function test_the_readme_has_no_translations_section() {
-		$this->assertSame( 0, preg_match( '/^### Translations/m', $this->readme() ) );
+		$this->assertSame( 0, preg_match( '/^### Translations/m', $this->readme() ), 'The readme carries no Translations section; wordpress.org supplies one.' );
 	}
 
 	/**
@@ -125,8 +125,8 @@ class WP_RelativeDate_Metadata_Test extends Plugin_Metadata_TestCase {
 		$readme = (string) preg_replace( '/`[^`]*`/', '', $this->readme() );
 
 		$this->assertSame( 0, preg_match( '#http://#', $readme ), 'Every readme link must use https.' );
-		$this->assertSame( 0, preg_match( '#http://#', $this->plugin_file() ) );
-		$this->assertStringNotContainsString( 'forums.lesterchan.net', $readme );
+		$this->assertSame( 0, preg_match( '#http://#', $this->plugin_file() ), 'The plugin file links over https only.' );
+		$this->assertStringNotContainsString( 'forums.lesterchan.net', $readme, 'The retired support forum is not linked; it no longer exists.' );
 	}
 
 	/**
@@ -166,7 +166,7 @@ class WP_RelativeDate_Metadata_Test extends Plugin_Metadata_TestCase {
 		$found = array_unique( array_merge( $singles[1], $plurals[1] ) );
 		sort( $found );
 
-		$this->assertSame( $expected, $found );
+		$this->assertSame( $expected, $found, 'A translatable string changed, which orphans every existing translation of it.' );
 	}
 
 	/**

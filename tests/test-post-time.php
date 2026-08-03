@@ -30,8 +30,8 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 		$time = $this->post_time_text();
 		$out  = relative_post_time( $time );
 
-		$this->assertStringStartsWith( $time . ' (', $out );
-		$this->assertStringEndsWith( ')', $out );
+		$this->assertStringStartsWith( $time . ' (', $out, 'The time is kept and the count appended to it.' );
+		$this->assertStringEndsWith( ')', $out, 'The appended count is closed, so the suffix is well formed.' );
 		$this->assertSecondsPhrase( 30, substr( $out, strlen( $time ) + 2, -1 ) );
 	}
 
@@ -51,7 +51,8 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text() . ' (5 minutes ago)',
-			relative_post_time( $this->post_time_text() )
+			relative_post_time( $this->post_time_text() ),
+			'Inside an hour the count is given in minutes.'
 		);
 	}
 
@@ -60,7 +61,8 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text() . ' (3 hours ago)',
-			relative_post_time( $this->post_time_text() )
+			relative_post_time( $this->post_time_text() ),
+			'Past an hour the count is given in hours.'
 		);
 	}
 
@@ -71,10 +73,10 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 	 */
 	public function test_a_single_minute_and_hour_are_singular() {
 		$this->make_post( 90 );
-		$this->assertSame( '1 minute ago', relative_post_time( $this->post_time_text(), true ) );
+		$this->assertSame( '1 minute ago', relative_post_time( $this->post_time_text(), true ), 'One minute takes the singular.' );
 
 		$this->make_post( 5400 );
-		$this->assertSame( '1 hour ago', relative_post_time( $this->post_time_text(), true ) );
+		$this->assertSame( '1 hour ago', relative_post_time( $this->post_time_text(), true ), 'One hour takes the singular.' );
 	}
 
 	public function test_a_post_from_another_calendar_day_keeps_its_plain_time() {
@@ -82,7 +84,8 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text(),
-			relative_post_time( $this->post_time_text() )
+			relative_post_time( $this->post_time_text() ),
+			'The time form is scoped to one calendar day; another day gets no suffix.'
 		);
 	}
 
@@ -96,14 +99,15 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text(),
-			relative_post_time( $this->post_time_text() )
+			relative_post_time( $this->post_time_text() ),
+			'A future timestamp gets no suffix rather than a negative count.'
 		);
 	}
 
 	public function test_no_post_in_scope_returns_the_input_untouched() {
 		unset( $GLOBALS['post'] );
 
-		$this->assertSame( '12:00 pm', relative_post_time( '12:00 pm' ) );
+		$this->assertSame( '12:00 pm', relative_post_time( '12:00 pm' ), 'With no post in scope the input is returned untouched.' );
 	}
 
 	public function test_the_filter_is_wired_up() {
@@ -111,7 +115,8 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text() . ' (5 minutes ago)',
-			get_the_time( '', $post )
+			get_the_time( '', $post ),
+			'The filter is attached, so core output goes through it.'
 		);
 	}
 
@@ -125,6 +130,6 @@ class WP_RelativeDate_Post_Time_Test extends WP_RelativeDate_TestCase {
 		ob_start();
 		the_time();
 
-		$this->assertSame( $this->post_time_text() . ' (5 minutes ago)', ob_get_clean() );
+		$this->assertSame( $this->post_time_text() . ' (5 minutes ago)', ob_get_clean(), 'The relative form is applied once, not once per filter pass.' );
 	}
 }

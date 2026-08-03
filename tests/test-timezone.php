@@ -69,7 +69,7 @@ class WP_RelativeDate_Timezone_Test extends WP_RelativeDate_TestCase {
 		$this->use_timezone( 'Asia/Singapore' );
 		$this->make_post( 0 );
 
-		$this->assertSame( 'Today', relative_post_date( $this->post_date_text() ) );
+		$this->assertSame( 'Today', relative_post_date( $this->post_date_text() ), 'Today is decided by the site timezone, not by UTC.' );
 	}
 
 	public function test_a_named_timezone_counts_days_from_local_midnight() {
@@ -79,7 +79,8 @@ class WP_RelativeDate_Timezone_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (3 days ago)',
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'Days are counted from local midnight, not from a rolling 24 hours.'
 		);
 	}
 
@@ -93,7 +94,8 @@ class WP_RelativeDate_Timezone_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text() . ' (5 days ago)',
-			relative_post_date( $this->post_date_text() )
+			relative_post_date( $this->post_date_text() ),
+			'A daylight saving change does not add or lose a day in the count.'
 		);
 	}
 
@@ -104,7 +106,8 @@ class WP_RelativeDate_Timezone_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_time_text() . ' (5 minutes ago)',
-			relative_post_time( $this->post_time_text() )
+			relative_post_time( $this->post_time_text() ),
+			'Minutes are counted in the site timezone too.'
 		);
 	}
 
@@ -116,6 +119,6 @@ class WP_RelativeDate_Timezone_Test extends WP_RelativeDate_TestCase {
 		$this->skip_if_crosses_year( 2 * DAY_IN_SECONDS );
 		$this->make_comment( 2 * DAY_IN_SECONDS );
 
-		$this->assertSame( 'DATE (2 days ago)', relative_comment_date( 'DATE' ) );
+		$this->assertSame( 'DATE (2 days ago)', relative_comment_date( 'DATE' ), 'The site timezone applies to comment dates as well as post dates.' );
 	}
 }

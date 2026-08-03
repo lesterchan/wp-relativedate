@@ -38,13 +38,13 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 	public function test_it_returns_today_for_a_post_from_today() {
 		$this->make_post( 0 );
 
-		$this->assertSame( 'Today', relative_post_the_date( '', '', '', false, false ) );
+		$this->assertSame( 'Today', relative_post_the_date( '', '', '', false, false ), 'The tag returns the same relative form the filter produces.' );
 	}
 
 	public function test_it_echoes_by_default() {
 		$this->make_post( 0 );
 
-		$this->assertSame( 'Today', $this->render() );
+		$this->assertSame( 'Today', $this->render(), 'The tag echoes by default rather than returning.' );
 	}
 
 	public function test_it_honours_a_custom_date_format() {
@@ -53,7 +53,8 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text( 'Y-m-d' ) . ' (3 days ago)',
-			relative_post_the_date( 'Y-m-d', '', '', false, false )
+			relative_post_the_date( 'Y-m-d', '', '', false, false ),
+			'A custom format reaches the date, and the count is still appended.'
 		);
 	}
 
@@ -61,7 +62,7 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 		$this->skip_if_crosses_year( 3 * DAY_IN_SECONDS );
 		$this->make_post( 3 * DAY_IN_SECONDS );
 
-		$this->assertSame( '3 days ago', relative_post_the_date( '', '', '', true, false ) );
+		$this->assertSame( '3 days ago', relative_post_the_date( '', '', '', true, false ), 'The ago-only argument drops the date and keeps the count.' );
 	}
 
 	public function test_a_post_from_a_previous_year_keeps_its_plain_date() {
@@ -69,7 +70,8 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			$this->post_date_text(),
-			relative_post_the_date( '', '', '', false, false )
+			relative_post_the_date( '', '', '', false, false ),
+			'A previous year is past the month cutoff, so the plain date stands.'
 		);
 	}
 
@@ -89,7 +91,8 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			'<h2 class="date">Today</h2>',
-			$this->render( '', '<h2 class="date">', '</h2>' )
+			$this->render( '', '<h2 class="date">', '</h2>' ),
+			'The before and after arguments reach the page as markup, not as text.'
 		);
 	}
 
@@ -121,13 +124,14 @@ class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
 
 		$this->assertSame(
 			'<h2 class="date">Today</h2>',
-			relative_post_the_date( '', '<h2 class="date">', '</h2>', false, false )
+			relative_post_the_date( '', '<h2 class="date">', '</h2>', false, false ),
+			'The before and after arguments are markup in the returned form too.'
 		);
 	}
 
 	public function test_no_post_in_scope_renders_nothing() {
 		unset( $GLOBALS['post'] );
 
-		$this->assertSame( '', (string) relative_post_the_date( '', '', '', false, false ) );
+		$this->assertSame( '', (string) relative_post_the_date( '', '', '', false, false ), 'With no post in scope the tag renders nothing, wrapper included.' );
 	}
 }
