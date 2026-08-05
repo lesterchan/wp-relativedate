@@ -2,10 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-WP-RelativeDate follows `_standards/STANDARDS.md` in the parent folder, which is
-the contract for all nineteen plugins in the collection. Where this file and
-that one disagree, that one wins.
-
 ## What it is
 
 Four filters and two shortcodes. It rewrites a date WordPress has already
@@ -16,10 +12,10 @@ screen, no settings, no options, no database. `includes/` is under 700 lines and
 
 ## Storage: none
 
-Not even the version row. §2.1 exempts a plugin with no settings and no tables,
-and this is the plugin that exemption was written for. `uninstall.php` still
-deletes `wp_relativedate_version` — nothing writes it, and no released version
-ever did; it exists to clean up sites that ran an early unreleased 2.0.0 build.
+Not even a version marker row. A plugin with no settings and no tables has
+nothing to migrate and nothing to stamp. `uninstall.php` still deletes
+`wp_relativedate_version` — nothing writes it, and no released version ever did;
+it exists to clean up sites that ran an early unreleased 2.0.0 build.
 
 ## Traps
 
@@ -63,6 +59,10 @@ ever did; it exists to clean up sites that ran an early unreleased 2.0.0 build.
 
 ## Tests
 
+`bin/test.sh` runs PHPUnit, `bin/test-multisite.sh` the network pass, and
+`bin/test-e2e.sh` the Playwright suite. **Run them rather than trusting a note
+about their last result** — CI is the authority, and this file cannot be.
+
 `tests/` splits by surface: `test-post-date.php` / `test-post-time.php` /
 `test-comment.php` for the three ladders, `test-timezone.php` for the
 `wp_timezone()`/`current_datetime()` pairing, `test-backcompat.php` for the
@@ -79,5 +79,4 @@ a `daysAgo()` helper pinned to midday.
 
 The README's 2.0.0 Upgrade Notice ends "The plugin now stores one row,
 `wp_relativedate_version`, and deletes it on uninstall." That is untrue —
-commit `82157c3` ("Store nothing at all") removed it. wp-serverinfo and
-wp-showhide carry the same stale sentence.
+commit `82157c3` ("Store nothing at all") removed it.
