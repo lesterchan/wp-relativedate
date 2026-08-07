@@ -85,11 +85,8 @@ Removing the `get_the_date` filter also covers `the_date()`, which builds its ou
 
 ## Screenshots
 
-1. Post - Today
-2. Post - Yesterday
-3. Post - Days Ago
-4. Post - Weeks Ago
-5. Comment - Seconds Ago
+1. Every post date on the front page, written as how long ago it was
+2. The `relativedate` and `relativetime` shortcodes, in a post published minutes ago
 
 ## Changelog
 ### 2.0.0
