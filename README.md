@@ -12,7 +12,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Displays relative date alongside with your post/comments actual date.
 
 ## Description
-Like 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 'Seconds Ago', '2 Minutes Ago', '2 Hours Ago'.
+WP-RelativeDate rewrites your post and comment dates as how long ago they were: 'Today', 'Yesterday', '2 Days Ago', '2 Weeks Ago', '2 Hours Ago', '2 Minutes Ago', '2 Seconds Ago'.
 
 There is nothing to configure and no settings screen. WP-RelativeDate rewrites your post and comment dates as soon as it is activated, and leaves anything more than a month old, or from a previous year, exactly as your theme printed it.
 
