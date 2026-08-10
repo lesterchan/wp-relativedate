@@ -74,9 +74,3 @@ clock.** The e2e "yesterday" fixture was `Date.now() - 26 hours`, which lands tw
 calendar days back when the suite runs between midnight and 02:00 — CI ran at
 01:44 UTC and the plugin was correctly saying "2 days ago". Fixtures go through
 a `daysAgo()` helper pinned to midday.
-
-## Known discrepancy
-
-The README's 2.0.0 Upgrade Notice ends "The plugin now stores one row,
-`wp_relativedate_version`, and deletes it on uninstall." That is untrue —
-commit `82157c3` ("Store nothing at all") removed it.
