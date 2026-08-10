@@ -45,6 +45,11 @@ class WP_RelativeDate_Metadata_Test extends Plugin_Metadata_TestCase {
 	 * shortcode's ago_only attribute changed meaning, and a template tag that
 	 * had been escaping its own wrapper markup stopped.
 	 *
+	 * No option name is among these. The notice tells the owner the plugin
+	 * stores nothing, and naming a row would send them looking for one no
+	 * released version ever wrote -- only an early pre-release 2.0.0 build did,
+	 * which is the one case uninstall.php still cleans up.
+	 *
 	 * @return string[]
 	 */
 	protected function upgrade_notice_subjects() {
@@ -60,7 +65,6 @@ class WP_RelativeDate_Metadata_Test extends Plugin_Metadata_TestCase {
 			'ago_only="false"',
 			'ago_only="true"',
 			'relative_post_the_date()',
-			'`wp_relativedate_version`',
 		);
 	}
 
