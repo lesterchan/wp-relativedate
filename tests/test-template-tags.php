@@ -8,7 +8,7 @@
 /**
  * @covers ::relative_post_the_date
  */
-class WP_RelativeDate_Template_Tag_Test extends WP_RelativeDate_TestCase {
+class WP_RelativeDate_Template_Tags_Test extends WP_RelativeDate_TestCase {
 
 	/**
 	 * Skip a fixture whose date falls in a different calendar year to today.
