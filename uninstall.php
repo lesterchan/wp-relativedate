@@ -32,12 +32,9 @@ function wp_relativedate_uninstall_site() {
 }
 
 if ( is_multisite() ) {
-	/*
-	 * 'number' => 0 lifts WP_Site_Query's default cap of 100, which would
-	 * otherwise leave the rows behind on every site past the hundredth while
-	 * still reporting a successful uninstall. 'fields' => 'ids' avoids
-	 * hydrating WP_Site objects the loop never looks at.
-	 */
+	// 'number' => 0 lifts WP_Site_Query's default cap of 100, which would
+	// otherwise skip every site past the hundredth while reporting success.
+	// 'fields' => 'ids' avoids hydrating WP_Site objects the loop never reads.
 	$wp_relativedate_site_ids = get_sites(
 		array(
 			'fields' => 'ids',
@@ -46,8 +43,8 @@ if ( is_multisite() ) {
 	);
 
 	foreach ( $wp_relativedate_site_ids as $wp_relativedate_site_id ) {
-		// switch_to_blog() pushes onto a stack, so the restore belongs inside
-		// the loop -- restoring once at the end leaves it unwound by one.
+		// Inside the loop: switch_to_blog() pushes onto a stack, so restoring
+		// once after the loop unwinds it by exactly one.
 		switch_to_blog( (int) $wp_relativedate_site_id );
 
 		wp_relativedate_uninstall_site();
