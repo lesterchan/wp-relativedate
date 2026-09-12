@@ -150,7 +150,7 @@ if ( ! function_exists( 'relative_post_the_date' ) ) {
 	 * @param string $after            Markup to close with.
 	 * @param bool   $display_ago_only Return only the relative phrase.
 	 * @param bool   $display          Echo instead of returning.
-	 * @return string|void Markup, or nothing when $display is true.
+	 * @return ($display is true ? void : string) Markup, or nothing when $display is true.
 	 */
 	function relative_post_the_date( $d = '', $before = '', $after = '', $display_ago_only = false, $display = true ) {
 		$post = get_post();

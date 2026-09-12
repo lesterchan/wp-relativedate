@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method WP_RelativeDate\:\:shortcode_date\(\) has parameter \$atts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/class-wp-relativedate.php
+
+		-
+			message: '#^Method WP_RelativeDate\:\:shortcode_time\(\) has parameter \$atts with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: includes/class-wp-relativedate.php
+
+		-
+			message: '#^Parameter \#1 \$current_timeformat of function relative_post_time expects string, int\|string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/class-wp-relativedate.php
+
+		-
+			message: '#^Parameter \#2 \$atts of function shortcode_atts expects array, array\|string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: includes/class-wp-relativedate.php
+
+		-
+			message: '#^Parameter \#2 \$formatted of static method WP_RelativeDate_Core\:\:relative_date\(\) expects string, int\|string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: includes/template-tags.php
